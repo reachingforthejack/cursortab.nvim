@@ -4,7 +4,7 @@ A reverse engineered version of the [https://www.cursor.com/](Cursor) IDE's Tab 
 
 This is extremely crude right now and barely implements any of the good features, like the diff history etc. but all of the API scaffolding is here.
 
-Before going any further, I want to give thanks to [https://github.com/everestmz/cursor-rpc](this work) done by everestmz that saved me a lot of time and set up the scaffolding for locating these API nedpoints.
+Before going any further, I want to give thanks to [this work](https://github.com/everestmz/cursor-rpc) done by everestmz that saved me a lot of time and set up the scaffolding for locating these API endpoints.
 
 Tomorrow I'll update this with more detailed information on my findings, I'm very sleepy right now but wanted to get something up before the end of the day...
 
