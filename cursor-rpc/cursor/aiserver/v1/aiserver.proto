@@ -1,0 +1,5051 @@
+syntax = "proto3";
+package aiserver.v1;
+option go_package = "cursor/gen/aiserver/v1;aiserverv1";
+enum ClientSideToolV2 { // aiserver.v1.ClientSideToolV2
+	CLIENT_SIDE_TOOL_V2_UNSPECIFIED = 0;
+	CLIENT_SIDE_TOOL_V2_READ_SEMSEARCH_FILES = 1;
+	CLIENT_SIDE_TOOL_V2_READ_FILE_FOR_IMPORTS = 2;
+	CLIENT_SIDE_TOOL_V2_RIPGREP_SEARCH = 3;
+	CLIENT_SIDE_TOOL_V2_RUN_TERMINAL_COMMAND = 4;
+	CLIENT_SIDE_TOOL_V2_READ_FILE = 5;
+	CLIENT_SIDE_TOOL_V2_LIST_DIR = 6;
+	CLIENT_SIDE_TOOL_V2_EDIT_FILE = 7;
+	CLIENT_SIDE_TOOL_V2_FILE_SEARCH = 8;
+	CLIENT_SIDE_TOOL_V2_SEMANTIC_SEARCH_FULL = 9;
+	CLIENT_SIDE_TOOL_V2_CREATE_FILE = 10;
+	CLIENT_SIDE_TOOL_V2_DELETE_FILE = 11;
+}
+enum EmbeddingModel { // aiserver.v1.EmbeddingModel
+	EMBEDDING_MODEL_UNSPECIFIED = 0;
+	EMBEDDING_MODEL_VOYAGE_CODE_2 = 1;
+	EMBEDDING_MODEL_TEXT_EMBEDDINGS_LARGE_3 = 2;
+	EMBEDDING_MODEL_QWEN_1_5B_CUSTOM = 3;
+}
+enum ChunkType { // aiserver.v1.ChunkType
+	CHUNK_TYPE_UNSPECIFIED = 0;
+	CHUNK_TYPE_CODEBASE = 1;
+	CHUNK_TYPE_LONG_FILE = 2;
+	CHUNK_TYPE_DOCS = 3;
+}
+enum FastApplySource { // aiserver.v1.FastApplySource
+	FAST_APPLY_SOURCE_UNSPECIFIED = 0;
+	FAST_APPLY_SOURCE_COMPOSER = 1;
+	FAST_APPLY_SOURCE_CLICKED_APPLY = 2;
+	FAST_APPLY_SOURCE_CACHED_APPLY = 3;
+}
+enum BuiltinTool { // aiserver.v1.BuiltinTool
+	BUILTIN_TOOL_UNSPECIFIED = 0;
+	BUILTIN_TOOL_SEARCH = 1;
+	BUILTIN_TOOL_READ_CHUNK = 2;
+	BUILTIN_TOOL_GOTODEF = 3;
+	BUILTIN_TOOL_EDIT = 4;
+	BUILTIN_TOOL_UNDO_EDIT = 5;
+	BUILTIN_TOOL_END = 6;
+	BUILTIN_TOOL_NEW_FILE = 7;
+	BUILTIN_TOOL_ADD_TEST = 8;
+	BUILTIN_TOOL_RUN_TEST = 9;
+	BUILTIN_TOOL_DELETE_TEST = 10;
+	BUILTIN_TOOL_SAVE_FILE = 11;
+	BUILTIN_TOOL_GET_TESTS = 12;
+	BUILTIN_TOOL_GET_SYMBOLS = 13;
+	BUILTIN_TOOL_SEMANTIC_SEARCH = 14;
+	BUILTIN_TOOL_GET_PROJECT_STRUCTURE = 15;
+	BUILTIN_TOOL_CREATE_RM_FILES = 16;
+	BUILTIN_TOOL_RUN_TERMINAL_COMMANDS = 17;
+	BUILTIN_TOOL_NEW_EDIT = 18;
+	BUILTIN_TOOL_READ_WITH_LINTER = 19;
+}
+enum FeatureType { // aiserver.v1.FeatureType
+	FEATURE_TYPE_UNSPECIFIED = 0;
+	FEATURE_TYPE_EDIT = 1;
+	FEATURE_TYPE_GENERATE = 2;
+	FEATURE_TYPE_INLINE_LONG_COMPLETION = 3;
+}
+enum TaskStatus { // aiserver.v1.TaskStatus
+	TASK_STATUS_UNSPECIFIED = 0;
+	TASK_STATUS_RUNNING = 1;
+	TASK_STATUS_PAUSED = 2;
+	TASK_STATUS_DONE = 3;
+	TASK_STATUS_NOT_STARTED = 4;
+}
+enum RerankerAlgorithm { // aiserver.v1.RerankerAlgorithm
+	RERANKER_ALGORITHM_UNSPECIFIED = 0;
+	RERANKER_ALGORITHM_LULEA = 1;
+	RERANKER_ALGORITHM_UMEA = 2;
+	RERANKER_ALGORITHM_NONE = 3;
+	RERANKER_ALGORITHM_LLAMA = 4;
+	RERANKER_ALGORITHM_STARCODER_V1 = 5;
+	RERANKER_ALGORITHM_GPT_3_5_LOGPROBS = 6;
+	RERANKER_ALGORITHM_LULEA_HAIKU = 7;
+	RERANKER_ALGORITHM_COHERE = 8;
+	RERANKER_ALGORITHM_VOYAGE = 9;
+	RERANKER_ALGORITHM_VOYAGE_EMBEDS = 10;
+	RERANKER_ALGORITHM_IDENTITY = 11;
+	RERANKER_ALGORITHM_ADA_EMBEDS = 12;
+}
+enum RechunkerChoice { // aiserver.v1.RechunkerChoice
+	RECHUNKER_CHOICE_UNSPECIFIED = 0;
+	RECHUNKER_CHOICE_IDENTITY = 1;
+	RECHUNKER_CHOICE_600_TOKS = 2;
+	RECHUNKER_CHOICE_2400_TOKS = 3;
+	RECHUNKER_CHOICE_4000_TOKS = 4;
+}
+enum LintGenerator { // aiserver.v1.LintGenerator
+	LINT_GENERATOR_UNSPECIFIED = 0;
+	LINT_GENERATOR_NAIVE = 1;
+	LINT_GENERATOR_COMMENT_PIPELINE = 2;
+	LINT_GENERATOR_SIMPLE_BUG = 3;
+	LINT_GENERATOR_SIMPLE_LINT_RULES = 4;
+}
+enum LintDiscriminator { // aiserver.v1.LintDiscriminator
+	LINT_DISCRIMINATOR_UNSPECIFIED = 0;
+	LINT_DISCRIMINATOR_SPECIFIC_RULES = 1;
+	LINT_DISCRIMINATOR_COMPILE_ERRORS = 2;
+	LINT_DISCRIMINATOR_CHANGE_BEHAVIOR = 3;
+	LINT_DISCRIMINATOR_RELEVANCE = 4;
+	LINT_DISCRIMINATOR_USER_AWARENESS = 5;
+	LINT_DISCRIMINATOR_CORRECTNESS = 6;
+	LINT_DISCRIMINATOR_CHUNKING = 7;
+	LINT_DISCRIMINATOR_TYPO = 8;
+	LINT_DISCRIMINATOR_CONFIDENCE = 9;
+	LINT_DISCRIMINATOR_DISMISSED_BUGS = 10;
+}
+enum CppSource { // aiserver.v1.CppSource
+	CPP_SOURCE_UNSPECIFIED = 0;
+	CPP_SOURCE_LINE_CHANGE = 1;
+	CPP_SOURCE_TYPING = 2;
+	CPP_SOURCE_OPTION_HOLD = 3;
+	CPP_SOURCE_LINTER_ERRORS = 4;
+	CPP_SOURCE_PARAMETER_HINTS = 5;
+	CPP_SOURCE_CURSOR_PREDICTION = 6;
+	CPP_SOURCE_MANUAL_TRIGGER = 7;
+	CPP_SOURCE_EDITOR_CHANGE = 8;
+}
+enum ChunkingStrategy { // aiserver.v1.ChunkingStrategy
+	CHUNKING_STRATEGY_UNSPECIFIED = 0;
+	CHUNKING_STRATEGY_DEFAULT = 1;
+}
+message HealthCheckRequest { // aiserver.v1.HealthCheckRequest
+}
+message HealthCheckResponse { // aiserver.v1.HealthCheckResponse
+		enum Status { // aiserver.v1.HealthCheckResponse.Status
+			STATUS_UNSPECIFIED = 0;
+			STATUS_HEALTHY = 1;
+		}
+	Status status = 1;
+}
+message PrivacyCheckRequest { // aiserver.v1.PrivacyCheckRequest
+}
+message PrivacyCheckResponse { // aiserver.v1.PrivacyCheckResponse
+	bool is_on_privacy_pod = 1;
+	bool is_ghost_mode_on = 2;
+}
+message TimeLeftHealthCheckResponse { // aiserver.v1.TimeLeftHealthCheckResponse
+	string time_left = 1;
+}
+message ThrowErrorCheckRequest { // aiserver.v1.ThrowErrorCheckRequest
+		enum Error { // aiserver.v1.ErrorDetails.Error
+			ERROR_UNSPECIFIED = 0;
+			ERROR_BAD_API_KEY = 1;
+			ERROR_BAD_USER_API_KEY = 2;
+			ERROR_NOT_LOGGED_IN = 3;
+			ERROR_INVALID_AUTH_ID = 4;
+			ERROR_NOT_HIGH_ENOUGH_PERMISSIONS = 5;
+			ERROR_AGENT_REQUIRES_LOGIN = 6;
+			ERROR_BAD_MODEL_NAME = 7;
+			ERROR_NOT_FOUND = 8;
+			ERROR_DEPRECATED = 9;
+			ERROR_USER_NOT_FOUND = 10;
+			ERROR_FREE_USER_RATE_LIMIT_EXCEEDED = 11;
+			ERROR_PRO_USER_RATE_LIMIT_EXCEEDED = 12;
+			ERROR_FREE_USER_USAGE_LIMIT = 13;
+			ERROR_PRO_USER_USAGE_LIMIT = 14;
+			ERROR_RESOURCE_EXHAUSTED = 15;
+			ERROR_AUTH_TOKEN_NOT_FOUND = 16;
+			ERROR_AUTH_TOKEN_EXPIRED = 17;
+			ERROR_OPENAI = 18;
+			ERROR_OPENAI_RATE_LIMIT_EXCEEDED = 19;
+			ERROR_OPENAI_ACCOUNT_LIMIT_EXCEEDED = 20;
+			ERROR_TASK_UUID_NOT_FOUND = 21;
+			ERROR_TASK_NO_PERMISSIONS = 22;
+			ERROR_AGENT_ENGINE_NOT_FOUND = 23;
+			ERROR_MAX_TOKENS = 24;
+			ERROR_PRO_USER_ONLY = 25;
+			ERROR_API_KEY_NOT_SUPPORTED = 26;
+			ERROR_USER_ABORTED_REQUEST = 27;
+			ERROR_GENERIC_RATE_LIMIT_EXCEEDED = 28;
+			ERROR_SLASH_EDIT_FILE_TOO_LONG = 29;
+			ERROR_FILE_UNSUPPORTED = 30;
+			ERROR_GPT_4_VISION_PREVIEW_RATE_LIMIT = 31;
+			ERROR_CUSTOM_MESSAGE = 32;
+			ERROR_OUTDATED_CLIENT = 33;
+			ERROR_CLAUDE_IMAGE_TOO_LARGE = 34;
+			ERROR_GITGRAPH_NOT_FOUND = 35;
+			ERROR_FILE_NOT_FOUND = 36;
+			ERROR_API_KEY_RATE_LIMIT = 37;
+			ERROR_DEBOUNCED = 38;
+			ERROR_BAD_REQUEST = 39;
+			ERROR_REPOSITORY_SERVICE_REPOSITORY_IS_NOT_INITIALIZED = 40;
+			ERROR_UNAUTHORIZED = 41;
+		}
+	Error error = 1;
+}
+message ThrowErrorCheckResponse { // aiserver.v1.ThrowErrorCheckResponse
+}
+message AvailableModelsRequest { // aiserver.v1.AvailableModelsRequest
+	bool is_nightly = 1;
+	bool include_long_context_models = 2;
+}
+message AvailableModelsResponse { // aiserver.v1.AvailableModelsResponse
+		message AvailableModel { // aiserver.v1.AvailableModelsResponse.AvailableModel
+			string name = 1;
+			bool default_on = 2;
+			optional bool is_long_context_only = 3;
+			optional bool is_chat_only = 4;
+		}
+	repeated AvailableModel models = 2;
+	repeated string model_names = 1;
+}
+message GetChatRequest { // aiserver.v1.GetChatRequest
+	CurrentFileInfo current_file = 1;
+	repeated ConversationMessage conversation = 2;
+	repeated RepositoryInfo repositories = 3;
+	ExplicitContext explicit_context = 4;
+	optional string workspace_root_path = 5;
+	repeated CodeBlock code_blocks = 6;
+	ModelDetails model_details = 7;
+	repeated string documentation_identifiers = 8;
+	string request_id = 9;
+	LinterErrors linter_errors = 10;
+	optional string summary = 11;
+	optional int32 summary_up_until_index = 12;
+	optional bool allow_long_file_scan = 13;
+	optional bool is_bash = 14;
+	string conversation_id = 15;
+	optional bool can_handle_filenames_after_language_ids = 16;
+	optional string use_web = 17;
+	repeated ChatQuote quotes = 18;
+	optional DebugInfo debug_info = 19;
+	optional string workspace_id = 20;
+	repeated ChatExternalLink external_links = 21;
+	repeated CommitNote commit_notes = 23;
+	optional bool long_context_mode = 22;
+	optional bool is_eval = 24;
+	optional int32 desired_max_tokens = 26;
+	ContextAST context_ast = 25;
+	optional bool is_composer = 27;
+	optional bool runnable_code_blocks = 28;
+	optional bool should_cache = 29;
+}
+message CurrentFileInfo { // aiserver.v1.CurrentFileInfo
+		message NotebookCell { // aiserver.v1.CurrentFileInfo.NotebookCell
+		}
+	string relative_workspace_path = 1;
+	string contents = 2;
+	bool rely_on_filesync = 18;
+	optional string sha_256_hash = 17;
+	repeated NotebookCell cells = 16;
+	repeated BM25Chunk top_chunks = 10;
+	int32 contents_start_at_line = 9;
+	CursorPosition cursor_position = 3;
+	repeated DataframeInfo dataframes = 4;
+	int32 total_number_of_lines = 8;
+	string language_id = 5;
+	CursorRange selection = 6;
+	optional int32 alternative_version_id = 11;
+	repeated Diagnostic diagnostics = 7;
+	optional int32 file_version = 14;
+	repeated int32 cell_start_lines = 15;
+	string workspace_root_path = 19;
+}
+message BM25Chunk { // aiserver.v1.BM25Chunk
+	string content = 1;
+	SimplestRange range = 2;
+	int32 score = 3;
+	string relative_path = 4;
+}
+message SimplestRange { // aiserver.v1.SimplestRange
+	int32 start_line = 1;
+	int32 end_line_inclusive = 2;
+}
+message CursorPosition { // aiserver.v1.CursorPosition
+	int32 line = 1;
+	int32 column = 2;
+}
+message DataframeInfo { // aiserver.v1.DataframeInfo
+		message Column { // aiserver.v1.DataframeInfo.Column
+			string key = 1;
+			string type = 2;
+		}
+	string name = 1;
+	string shape = 2;
+	int32 data_dimensionality = 3;
+	repeated Column columns = 6;
+	int32 row_count = 7;
+	string index_column = 8;
+}
+message CursorRange { // aiserver.v1.CursorRange
+	CursorPosition start_position = 1;
+	CursorPosition end_position = 2;
+}
+message Diagnostic { // aiserver.v1.Diagnostic
+		enum DiagnosticSeverity { // aiserver.v1.Diagnostic.DiagnosticSeverity
+			DIAGNOSTIC_SEVERITY_UNSPECIFIED = 0;
+			DIAGNOSTIC_SEVERITY_ERROR = 1;
+			DIAGNOSTIC_SEVERITY_WARNING = 2;
+			DIAGNOSTIC_SEVERITY_INFORMATION = 3;
+			DIAGNOSTIC_SEVERITY_HINT = 4;
+		}
+		message RelatedInformation { // aiserver.v1.Diagnostic.RelatedInformation
+			string message = 1;
+			CursorRange range = 2;
+		}
+	string message = 1;
+	CursorRange range = 2;
+	DiagnosticSeverity severity = 3;
+	repeated RelatedInformation related_information = 4;
+}
+message ConversationMessage { // aiserver.v1.ConversationMessage
+		enum MessageType { // aiserver.v1.ConversationMessage.MessageType
+			MESSAGE_TYPE_UNSPECIFIED = 0;
+			MESSAGE_TYPE_HUMAN = 1;
+			MESSAGE_TYPE_AI = 2;
+		}
+		message CodeChunk { // aiserver.v1.ConversationMessage.CodeChunk
+				enum SummarizationStrategy { // aiserver.v1.ConversationMessage.CodeChunk.SummarizationStrategy
+					SUMMARIZATION_STRATEGY_NONE_UNSPECIFIED = 0;
+					SUMMARIZATION_STRATEGY_SUMMARIZED = 1;
+					SUMMARIZATION_STRATEGY_EMBEDDED = 2;
+				}
+				enum Intent { // aiserver.v1.ConversationMessage.CodeChunk.Intent
+					INTENT_UNSPECIFIED = 0;
+					INTENT_COMPOSER_FILE = 1;
+					INTENT_COMPRESSED_COMPOSER_FILE = 2;
+					INTENT_RECENTLY_VIEWED_FILE = 3;
+					INTENT_OUTLINE = 4;
+					INTENT_MENTIONED_FILE = 5;
+				}
+			string relative_workspace_path = 1;
+			int32 start_line_number = 2;
+			repeated string lines = 3;
+			optional SummarizationStrategy summarization_strategy = 4;
+			string language_identifier = 5;
+			optional Intent intent = 6;
+			optional bool is_final_version = 7;
+			optional bool is_first_version = 8;
+			optional bool contents_are_missing = 9;
+		}
+		message ApproximateLintError { // aiserver.v1.ConversationMessage.ApproximateLintError
+			string message = 1;
+			string value = 2;
+			int32 start_line = 3;
+			int32 end_line = 4;
+			int32 start_column = 5;
+			int32 end_column = 6;
+		}
+		message Lints { // aiserver.v1.ConversationMessage.Lints
+			GetLintsForChangeResponse lints = 1;
+			string chat_codeblock_model_value = 2;
+		}
+		message ToolResult { // aiserver.v1.ConversationMessage.ToolResult
+				message CodeChunk { // aiserver.v1.ConversationMessage.CodeChunk
+						enum SummarizationStrategy { // aiserver.v1.ConversationMessage.CodeChunk.SummarizationStrategy
+							SUMMARIZATION_STRATEGY_NONE_UNSPECIFIED = 0;
+							SUMMARIZATION_STRATEGY_SUMMARIZED = 1;
+							SUMMARIZATION_STRATEGY_EMBEDDED = 2;
+						}
+						enum Intent { // aiserver.v1.ConversationMessage.CodeChunk.Intent
+							INTENT_UNSPECIFIED = 0;
+							INTENT_COMPOSER_FILE = 1;
+							INTENT_COMPRESSED_COMPOSER_FILE = 2;
+							INTENT_RECENTLY_VIEWED_FILE = 3;
+							INTENT_OUTLINE = 4;
+							INTENT_MENTIONED_FILE = 5;
+						}
+					string relative_workspace_path = 1;
+					int32 start_line_number = 2;
+					repeated string lines = 3;
+					optional SummarizationStrategy summarization_strategy = 4;
+					string language_identifier = 5;
+					optional Intent intent = 6;
+					optional bool is_final_version = 7;
+					optional bool is_first_version = 8;
+					optional bool contents_are_missing = 9;
+				}
+			string tool_call_id = 1;
+			string tool_name = 2;
+			uint32 tool_index = 3;
+			string args = 4;
+			string raw_args = 5;
+			repeated CodeChunk attached_code_chunks = 6;
+			optional string content = 7;
+			ClientSideToolV2Result result = 8;
+			optional ToolResultError error = 9;
+		}
+		message NotepadContext { // aiserver.v1.ConversationMessage.NotepadContext
+				message CodeChunk { // aiserver.v1.ConversationMessage.CodeChunk
+						enum SummarizationStrategy { // aiserver.v1.ConversationMessage.CodeChunk.SummarizationStrategy
+							SUMMARIZATION_STRATEGY_NONE_UNSPECIFIED = 0;
+							SUMMARIZATION_STRATEGY_SUMMARIZED = 1;
+							SUMMARIZATION_STRATEGY_EMBEDDED = 2;
+						}
+						enum Intent { // aiserver.v1.ConversationMessage.CodeChunk.Intent
+							INTENT_UNSPECIFIED = 0;
+							INTENT_COMPOSER_FILE = 1;
+							INTENT_COMPRESSED_COMPOSER_FILE = 2;
+							INTENT_RECENTLY_VIEWED_FILE = 3;
+							INTENT_OUTLINE = 4;
+							INTENT_MENTIONED_FILE = 5;
+						}
+					string relative_workspace_path = 1;
+					int32 start_line_number = 2;
+					repeated string lines = 3;
+					optional SummarizationStrategy summarization_strategy = 4;
+					string language_identifier = 5;
+					optional Intent intent = 6;
+					optional bool is_final_version = 7;
+					optional bool is_first_version = 8;
+					optional bool contents_are_missing = 9;
+				}
+			string name = 1;
+			string text = 2;
+			repeated CodeChunk attached_code_chunks = 3;
+			repeated string attached_folders = 4;
+			repeated Commit commits = 5;
+			repeated PullRequest pull_requests = 6;
+			repeated GitDiff git_diffs = 7;
+			repeated ImageProto images = 8;
+		}
+		message EditTrailContext { // aiserver.v1.ConversationMessage.EditTrailContext
+				message EditLocation { // aiserver.v1.ConversationMessage.EditLocation
+					string relative_workspace_path = 1;
+					SimplestRange range = 3;
+					SimplestRange initial_range = 4;
+					string context_lines = 5;
+					string text = 6;
+					SimplestRange text_range = 7;
+				}
+			string unique_id = 1;
+			repeated EditLocation edit_trail_sorted = 2;
+		}
+		message RecentLocation { // aiserver.v1.ConversationMessage.RecentLocation
+			string relative_workspace_path = 1;
+			int32 line_number = 2;
+		}
+	string text = 1;
+	MessageType type = 2;
+	repeated CodeChunk attached_code_chunks = 3;
+	repeated CodeBlock codebase_context_chunks = 4;
+	repeated Commit commits = 5;
+	repeated PullRequest pull_requests = 6;
+	repeated GitDiff git_diffs = 7;
+	repeated SimpleFileDiff assistant_suggested_diffs = 8;
+	repeated InterpreterResult interpreter_results = 9;
+	repeated ImageProto images = 10;
+	repeated string attached_folders = 11;
+	repeated ApproximateLintError approximate_lint_errors = 12;
+	string bubble_id = 13;
+	optional string server_bubble_id = 32;
+	repeated FolderInfo attached_folders_new = 14;
+	repeated Lints lints = 15;
+	repeated UserResponseToSuggestedCodeBlock user_responses_to_suggested_code_blocks = 16;
+	repeated string relevant_files = 17;
+	repeated ToolResult tool_results = 18;
+	repeated NotepadContext notepads = 19;
+	optional bool is_capability_iteration = 20;
+	repeated ComposerCapabilityRequest capabilities = 21;
+	repeated EditTrailContext edit_trail_contexts = 22;
+	repeated SuggestedCodeBlock suggested_code_blocks = 23;
+	repeated RedDiff diffs_for_compressing_files = 24;
+	repeated LinterErrorsWithoutFileContents multi_file_linter_errors = 25;
+	repeated DiffHistoryData diff_histories = 26;
+	repeated CodeChunk recently_viewed_files = 27;
+	repeated RecentLocation recent_locations_history = 28;
+	bool is_agentic = 29;
+	repeated ComposerFileDiffHistory file_diff_trajectories = 30;
+	optional ConversationSummary conversation_summary = 31;
+}
+message CodeBlock { // aiserver.v1.CodeBlock
+		message Signatures { // aiserver.v1.CodeBlock.Signatures
+			repeated CursorRange ranges = 1;
+		}
+	string relative_workspace_path = 1;
+	optional string file_contents = 2;
+	CursorRange range = 3;
+	string contents = 4;
+	Signatures signatures = 5;
+	optional string override_contents = 6;
+	optional string original_contents = 7;
+	repeated DetailedLine detailed_lines = 8;
+}
+message DetailedLine { // aiserver.v1.DetailedLine
+	string text = 1;
+	float line_number = 2;
+	bool is_signature = 3;
+}
+message Commit { // aiserver.v1.Commit
+	string sha = 1;
+	string message = 2;
+	string description = 3;
+	repeated FileDiff diff = 4;
+	string author = 5;
+	string date = 6;
+}
+message FileDiff { // aiserver.v1.FileDiff
+		message Chunk { // aiserver.v1.FileDiff.Chunk
+			string content = 1;
+			repeated string lines = 2;
+			int32 old_start = 3;
+			int32 old_lines = 4;
+			int32 new_start = 5;
+			int32 new_lines = 6;
+		}
+	string from = 1;
+	string to = 2;
+	repeated Chunk chunks = 3;
+}
+message PullRequest { // aiserver.v1.PullRequest
+	string title = 1;
+	string body = 2;
+	repeated FileDiff diff = 3;
+}
+message GitDiff { // aiserver.v1.GitDiff
+		enum DiffType { // aiserver.v1.GitDiff.DiffType
+			DIFF_TYPE_UNSPECIFIED = 0;
+			DIFF_TYPE_DIFF_TO_HEAD = 1;
+			DIFF_TYPE_DIFF_FROM_BRANCH_TO_MAIN = 2;
+		}
+	repeated FileDiff diffs = 1;
+	DiffType diff_type = 2;
+}
+message SimpleFileDiff { // aiserver.v1.SimpleFileDiff
+		message Chunk { // aiserver.v1.SimpleFileDiff.Chunk
+			repeated string old_lines = 1;
+			repeated string new_lines = 2;
+			LineRange old_range = 3;
+			LineRange new_range = 4;
+		}
+	string relative_workspace_path = 1;
+	repeated Chunk chunks = 3;
+}
+message LineRange { // aiserver.v1.LineRange
+	int32 start_line_number = 1;
+	int32 end_line_number_inclusive = 2;
+}
+message InterpreterResult { // aiserver.v1.InterpreterResult
+	string output = 1;
+	bool success = 2;
+}
+message ImageProto { // aiserver.v1.ImageProto
+		message Dimension { // aiserver.v1.ImageProto.Dimension
+			int32 width = 1;
+			int32 height = 2;
+		}
+	bytes data = 1;
+	Dimension dimension = 2;
+}
+message FolderInfo { // aiserver.v1.FolderInfo
+	string relative_path = 1;
+	repeated FolderFileInfo files = 2;
+}
+message FolderFileInfo { // aiserver.v1.FolderFileInfo
+	string relative_path = 1;
+	string content = 2;
+	bool truncated = 3;
+	float score = 4;
+}
+message GetLintsForChangeResponse { // aiserver.v1.GetLintsForChangeResponse
+		message Lint { // aiserver.v1.GetLintsForChangeResponse.Lint
+				message QuickFix { // aiserver.v1.GetLintsForChangeResponse.Lint.QuickFix
+						message Edit { // aiserver.v1.GetLintsForChangeResponse.Lint.QuickFix.Edit
+							string relative_workspace_path = 1;
+							string text = 2;
+							int32 start_line_number_one_indexed = 3;
+							int32 start_column_one_indexed = 4;
+							int32 end_line_number_inclusive_one_indexed = 5;
+							int32 end_column_one_indexed = 6;
+						}
+					string message = 1;
+					string kind = 2;
+					bool is_preferred = 3;
+					repeated Edit edits = 4;
+				}
+			string message = 1;
+			string severity = 2;
+			string relative_workspace_path = 3;
+			int32 start_line_number_one_indexed = 4;
+			int32 start_column_one_indexed = 5;
+			int32 end_line_number_inclusive_one_indexed = 6;
+			int32 end_column_one_indexed = 7;
+			repeated QuickFix quick_fixes = 9;
+		}
+	repeated Lint lints = 1;
+}
+message UserResponseToSuggestedCodeBlock { // aiserver.v1.UserResponseToSuggestedCodeBlock
+		enum UserResponseType { // aiserver.v1.UserResponseToSuggestedCodeBlock.UserResponseType
+			USER_RESPONSE_TYPE_UNSPECIFIED = 0;
+			USER_RESPONSE_TYPE_ACCEPT = 1;
+			USER_RESPONSE_TYPE_REJECT = 2;
+			USER_RESPONSE_TYPE_MODIFY = 3;
+		}
+	UserResponseType user_response_type = 1;
+	string file_path = 2;
+	optional FileDiff user_modifications_to_suggested_code_blocks = 3;
+}
+message ClientSideToolV2Result { // aiserver.v1.ClientSideToolV2Result
+	ClientSideToolV2 tool = 1;
+	ReadSemsearchFilesResult read_semsearch_files_result = 2;
+	ReadFileForImportsResult read_file_for_imports_result = 3;
+	RipgrepSearchResult ripgrep_search_result = 4;
+	RunTerminalCommandResult run_terminal_command_result = 5;
+	ReadFileResult read_file_result = 6;
+	ListDirResult list_dir_result = 9;
+	EditFileResult edit_file_result = 10;
+	ToolCallFileSearchResult file_search_result = 11;
+	SemanticSearchFullResult semantic_search_full_result = 18;
+	CreateFileResult create_file_result = 19;
+	DeleteFileResult delete_file_result = 20;
+	optional ToolResultError error = 8;
+}
+message ReadSemsearchFilesResult { // aiserver.v1.ReadSemsearchFilesResult
+	repeated CodeResult code_results = 1;
+}
+message CodeResult { // aiserver.v1.CodeResult
+	CodeBlock code_block = 1;
+	float score = 2;
+}
+message ReadFileForImportsResult { // aiserver.v1.ReadFileForImportsResult
+	string contents = 1;
+}
+message RipgrepSearchResult { // aiserver.v1.RipgrepSearchResult
+	RipgrepSearchResultInternal internal = 1;
+}
+message RipgrepSearchResultInternal { // aiserver.v1.RipgrepSearchResultInternal
+		message IFileMatch { // aiserver.v1.RipgrepSearchResultInternal.IFileMatch
+				message ITextSearchResult { // aiserver.v1.RipgrepSearchResultInternal.ITextSearchResult
+						message ITextSearchMatch { // aiserver.v1.RipgrepSearchResultInternal.ITextSearchMatch
+								message ISearchRangeSetPairing { // aiserver.v1.RipgrepSearchResultInternal.ISearchRangeSetPairing
+										message ISearchRange { // aiserver.v1.RipgrepSearchResultInternal.ISearchRange
+											int32 start_line_number = 1;
+											int32 start_column = 2;
+											int32 end_line_number = 3;
+											int32 end_column = 4;
+										}
+									ISearchRange source = 1;
+									ISearchRange preview = 2;
+								}
+							optional string uri = 1;
+							repeated ISearchRangeSetPairing range_locations = 2;
+							string preview_text = 3;
+							optional int32 webview_index = 4;
+							optional string cell_fragment = 5;
+						}
+						message ITextSearchContext { // aiserver.v1.RipgrepSearchResultInternal.ITextSearchContext
+							optional string uri = 1;
+							string text = 2;
+							int32 line_number = 3;
+						}
+					ITextSearchMatch match = 1;
+					ITextSearchContext context = 2;
+				}
+			string resource = 1;
+			repeated ITextSearchResult results = 2;
+		}
+		enum SearchCompletionExitCode { // aiserver.v1.RipgrepSearchResultInternal.SearchCompletionExitCode
+			SEARCH_COMPLETION_EXIT_CODE_UNSPECIFIED = 0;
+			SEARCH_COMPLETION_EXIT_CODE_NORMAL = 1;
+			SEARCH_COMPLETION_EXIT_CODE_NEW_SEARCH_STARTED = 2;
+		}
+		message ITextSearchCompleteMessage { // aiserver.v1.RipgrepSearchResultInternal.ITextSearchCompleteMessage
+				enum TextSearchCompleteMessageType { // aiserver.v1.RipgrepSearchResultInternal.TextSearchCompleteMessageType
+					TEXT_SEARCH_COMPLETE_MESSAGE_TYPE_UNSPECIFIED = 0;
+					TEXT_SEARCH_COMPLETE_MESSAGE_TYPE_INFORMATION = 1;
+					TEXT_SEARCH_COMPLETE_MESSAGE_TYPE_WARNING = 2;
+				}
+			string text = 1;
+			TextSearchCompleteMessageType type = 2;
+			optional bool trusted = 3;
+		}
+		message IFileSearchStats { // aiserver.v1.RipgrepSearchResultInternal.IFileSearchStats
+				message ISearchEngineStats { // aiserver.v1.RipgrepSearchResultInternal.ISearchEngineStats
+					int32 file_walk_time = 1;
+					int32 directories_walked = 2;
+					int32 files_walked = 3;
+					int32 cmd_time = 4;
+					optional int32 cmd_result_count = 5;
+				}
+				message ICachedSearchStats { // aiserver.v1.RipgrepSearchResultInternal.ICachedSearchStats
+					bool cache_was_resolved = 1;
+					int32 cache_lookup_time = 2;
+					int32 cache_filter_time = 3;
+					int32 cache_entry_count = 4;
+				}
+				message IFileSearchProviderStats { // aiserver.v1.RipgrepSearchResultInternal.IFileSearchProviderStats
+					int32 provider_time = 1;
+					int32 post_process_time = 2;
+				}
+				enum FileSearchProviderType { // aiserver.v1.RipgrepSearchResultInternal.IFileSearchStats.FileSearchProviderType
+					FILE_SEARCH_PROVIDER_TYPE_UNSPECIFIED = 0;
+					FILE_SEARCH_PROVIDER_TYPE_FILE_SEARCH_PROVIDER = 1;
+					FILE_SEARCH_PROVIDER_TYPE_SEARCH_PROCESS = 2;
+				}
+			bool from_cache = 1;
+			ISearchEngineStats search_engine_stats = 2;
+			ICachedSearchStats cached_search_stats = 3;
+			IFileSearchProviderStats file_search_provider_stats = 4;
+			int32 result_count = 5;
+			FileSearchProviderType type = 6;
+			optional int32 sorting_time = 7;
+		}
+		message ITextSearchStats { // aiserver.v1.RipgrepSearchResultInternal.ITextSearchStats
+				enum TextSearchProviderType { // aiserver.v1.RipgrepSearchResultInternal.ITextSearchStats.TextSearchProviderType
+					TEXT_SEARCH_PROVIDER_TYPE_UNSPECIFIED = 0;
+					TEXT_SEARCH_PROVIDER_TYPE_TEXT_SEARCH_PROVIDER = 1;
+					TEXT_SEARCH_PROVIDER_TYPE_SEARCH_PROCESS = 2;
+					TEXT_SEARCH_PROVIDER_TYPE_AI_TEXT_SEARCH_PROVIDER = 3;
+				}
+			TextSearchProviderType type = 1;
+		}
+	repeated IFileMatch results = 1;
+	optional SearchCompletionExitCode exit = 2;
+	optional bool limit_hit = 3;
+	repeated ITextSearchCompleteMessage messages = 4;
+	IFileSearchStats file_search_stats = 5;
+	ITextSearchStats text_search_stats = 6;
+}
+message RunTerminalCommandResult { // aiserver.v1.RunTerminalCommandResult
+	string output = 1;
+	int32 exit_code = 2;
+	optional bool rejected = 3;
+	bool popped_out_into_background = 4;
+}
+message ReadFileResult { // aiserver.v1.ReadFileResult
+	string contents = 1;
+	bool did_downgrade_to_line_range = 2;
+	bool did_shorten_line_range = 3;
+	bool did_set_default_line_range = 4;
+	optional string full_file_contents = 5;
+	optional string outline = 6;
+	optional int32 start_line_one_indexed = 7;
+	optional int32 end_line_one_indexed_inclusive = 8;
+	string relative_workspace_path = 9;
+	bool did_shorten_char_range = 10;
+}
+message ListDirResult { // aiserver.v1.ListDirResult
+		message File { // aiserver.v1.ListDirResult.File
+				message Timestamp { // google.protobuf.Timestamp
+					int64 seconds = 1;
+					int32 nanos = 2;
+				}
+			string name = 1;
+			bool is_directory = 2;
+			optional int64 size = 3;
+			optional Timestamp last_modified = 4;
+			optional int32 num_children = 5;
+			optional int32 num_lines = 6;
+		}
+	repeated File files = 1;
+	string directory_relative_workspace_path = 2;
+}
+message EditFileResult { // aiserver.v1.EditFileResult
+		message FileDiff { // aiserver.v1.EditFileResult.FileDiff
+				message ChunkDiff { // aiserver.v1.EditFileResult.FileDiff.ChunkDiff
+					string diff_string = 1;
+					int32 old_start = 2;
+					int32 new_start = 3;
+					int32 old_lines = 4;
+					int32 new_lines = 5;
+					int32 lines_removed = 6;
+					int32 lines_added = 7;
+				}
+				enum Editor { // aiserver.v1.EditFileResult.FileDiff.Editor
+					EDITOR_UNSPECIFIED = 0;
+					EDITOR_AI = 1;
+					EDITOR_HUMAN = 2;
+				}
+			repeated ChunkDiff chunks = 1;
+			Editor editor = 2;
+			bool hit_timeout = 3;
+		}
+	FileDiff diff = 1;
+	bool is_applied = 2;
+	bool apply_failed = 3;
+}
+message ToolCallFileSearchResult { // aiserver.v1.ToolCallFileSearchResult
+		message File { // aiserver.v1.ToolCallFileSearchResult.File
+			string uri = 1;
+		}
+	repeated File files = 1;
+	optional bool limit_hit = 2;
+	int32 num_results = 3;
+}
+message SemanticSearchFullResult { // aiserver.v1.SemanticSearchFullResult
+	repeated CodeResult code_results = 1;
+}
+message CreateFileResult { // aiserver.v1.CreateFileResult
+	bool file_created_successfully = 1;
+	bool file_already_exists = 2;
+}
+message DeleteFileResult { // aiserver.v1.DeleteFileResult
+	bool rejected = 1;
+	bool file_non_existent = 2;
+	bool file_deleted_successfully = 3;
+}
+message ToolResultError { // aiserver.v1.ToolResultError
+	string client_visible_error_message = 1;
+	string model_visible_error_message = 2;
+}
+message ComposerCapabilityRequest { // aiserver.v1.ComposerCapabilityRequest
+		enum ComposerCapabilityType { // aiserver.v1.ComposerCapabilityRequest.ComposerCapabilityType
+			COMPOSER_CAPABILITY_TYPE_UNSPECIFIED = 0;
+			COMPOSER_CAPABILITY_TYPE_LOOP_ON_LINTS = 1;
+			COMPOSER_CAPABILITY_TYPE_LOOP_ON_TESTS = 2;
+			COMPOSER_CAPABILITY_TYPE_MEGA_PLANNER = 3;
+			COMPOSER_CAPABILITY_TYPE_LOOP_ON_COMMAND = 4;
+			COMPOSER_CAPABILITY_TYPE_TOOL_CALL = 5;
+			COMPOSER_CAPABILITY_TYPE_DIFF_REVIEW = 6;
+			COMPOSER_CAPABILITY_TYPE_CONTEXT_PICKING = 7;
+			COMPOSER_CAPABILITY_TYPE_EDIT_TRAIL = 8;
+			COMPOSER_CAPABILITY_TYPE_AUTO_CONTEXT = 9;
+			COMPOSER_CAPABILITY_TYPE_CONTEXT_PLANNER = 10;
+			COMPOSER_CAPABILITY_TYPE_DIFF_HISTORY = 11;
+			COMPOSER_CAPABILITY_TYPE_REMEMBER_THIS = 12;
+			COMPOSER_CAPABILITY_TYPE_DECOMPOSER = 13;
+			COMPOSER_CAPABILITY_TYPE_USES_CODEBASE = 14;
+			COMPOSER_CAPABILITY_TYPE_TOOL_FORMER = 15;
+		}
+		message LoopOnLintsCapability { // aiserver.v1.ComposerCapabilityRequest.LoopOnLintsCapability
+			repeated LinterErrors linter_errors = 1;
+			optional string custom_instructions = 2;
+		}
+		message LoopOnTestsCapability { // aiserver.v1.ComposerCapabilityRequest.LoopOnTestsCapability
+			repeated string test_names = 1;
+			optional string custom_instructions = 2;
+		}
+		message MegaPlannerCapability { // aiserver.v1.ComposerCapabilityRequest.MegaPlannerCapability
+			optional string custom_instructions = 1;
+		}
+		message LoopOnCommandCapability { // aiserver.v1.ComposerCapabilityRequest.LoopOnCommandCapability
+			string command = 1;
+			optional string custom_instructions = 2;
+			optional string output = 3;
+			optional int32 exit_code = 4;
+		}
+		message ToolCallCapability { // aiserver.v1.ComposerCapabilityRequest.ToolCallCapability
+				message ToolSchema { // aiserver.v1.ComposerCapabilityRequest.ToolSchema
+						enum ToolType { // aiserver.v1.ComposerCapabilityRequest.ToolType
+							TOOL_TYPE_UNSPECIFIED = 0;
+							TOOL_TYPE_ADD_FILE_TO_CONTEXT = 1;
+							TOOL_TYPE_RUN_TERMINAL_COMMAND = 2;
+							TOOL_TYPE_ITERATE = 3;
+							TOOL_TYPE_REMOVE_FILE_FROM_CONTEXT = 4;
+							TOOL_TYPE_SEMANTIC_SEARCH_CODEBASE = 5;
+						}
+					ToolType type = 1;
+					string name = 2;
+					repeated string required = 4;
+				}
+			optional string custom_instructions = 1;
+			repeated ToolSchema tool_schemas = 2;
+			repeated string relevant_files = 3;
+			repeated string files_in_context = 4;
+			repeated string semantic_search_files = 5;
+		}
+		message DiffReviewCapability { // aiserver.v1.ComposerCapabilityRequest.DiffReviewCapability
+				message SimpleFileDiff { // aiserver.v1.ComposerCapabilityRequest.DiffReviewCapability.SimpleFileDiff
+						message Chunk { // aiserver.v1.ComposerCapabilityRequest.DiffReviewCapability.SimpleFileDiff.Chunk
+							repeated string old_lines = 1;
+							repeated string new_lines = 2;
+							LineRange old_range = 3;
+							LineRange new_range = 4;
+						}
+					string relative_workspace_path = 1;
+					repeated Chunk chunks = 3;
+				}
+			optional string custom_instructions = 1;
+			repeated SimpleFileDiff diffs = 2;
+		}
+		message ContextPickingCapability { // aiserver.v1.ComposerCapabilityRequest.ContextPickingCapability
+			optional string custom_instructions = 1;
+			repeated string potential_context_files = 2;
+			repeated CodeChunk potential_context_code_chunks = 3;
+			repeated string files_in_context = 4;
+		}
+		message EditTrailCapability { // aiserver.v1.ComposerCapabilityRequest.EditTrailCapability
+			optional string custom_instructions = 1;
+		}
+		message AutoContextCapability { // aiserver.v1.ComposerCapabilityRequest.AutoContextCapability
+			optional string custom_instructions = 1;
+			repeated string additional_files = 2;
+		}
+		message ContextPlannerCapability { // aiserver.v1.ComposerCapabilityRequest.ContextPlannerCapability
+			optional string custom_instructions = 1;
+			repeated CodeChunk attached_code_chunks = 2;
+		}
+		message RememberThisCapability { // aiserver.v1.ComposerCapabilityRequest.RememberThisCapability
+			optional string custom_instructions = 1;
+			string memory = 2;
+		}
+		message DecomposerCapability { // aiserver.v1.ComposerCapabilityRequest.DecomposerCapability
+			optional string custom_instructions = 1;
+		}
+	ComposerCapabilityType type = 1;
+	LoopOnLintsCapability loop_on_lints = 2;
+	LoopOnTestsCapability loop_on_tests = 3;
+	MegaPlannerCapability mega_planner = 4;
+	LoopOnCommandCapability loop_on_command = 5;
+	ToolCallCapability tool_call = 6;
+	DiffReviewCapability diff_review = 7;
+	ContextPickingCapability context_picking = 8;
+	EditTrailCapability edit_trail = 9;
+	AutoContextCapability auto_context = 10;
+	ContextPlannerCapability context_planner = 11;
+	RememberThisCapability remember_this = 12;
+	DecomposerCapability decomposer = 13;
+}
+message LinterErrors { // aiserver.v1.LinterErrors
+	string relative_workspace_path = 1;
+	repeated LinterError errors = 2;
+	string file_contents = 3;
+}
+message LinterError { // aiserver.v1.LinterError
+		message RelatedInformation { // aiserver.v1.Diagnostic.RelatedInformation
+			string message = 1;
+			CursorRange range = 2;
+		}
+		enum DiagnosticSeverity { // aiserver.v1.Diagnostic.DiagnosticSeverity
+			DIAGNOSTIC_SEVERITY_UNSPECIFIED = 0;
+			DIAGNOSTIC_SEVERITY_ERROR = 1;
+			DIAGNOSTIC_SEVERITY_WARNING = 2;
+			DIAGNOSTIC_SEVERITY_INFORMATION = 3;
+			DIAGNOSTIC_SEVERITY_HINT = 4;
+		}
+	string message = 1;
+	CursorRange range = 2;
+	optional string source = 3;
+	repeated RelatedInformation related_information = 4;
+	optional DiagnosticSeverity severity = 5;
+}
+message CodeChunk { // aiserver.v1.CodeChunk
+		enum SummarizationStrategy { // aiserver.v1.CodeChunk.SummarizationStrategy
+			SUMMARIZATION_STRATEGY_NONE_UNSPECIFIED = 0;
+			SUMMARIZATION_STRATEGY_SUMMARIZED = 1;
+			SUMMARIZATION_STRATEGY_EMBEDDED = 2;
+		}
+		enum Intent { // aiserver.v1.CodeChunk.Intent
+			INTENT_UNSPECIFIED = 0;
+			INTENT_COMPOSER_FILE = 1;
+			INTENT_COMPRESSED_COMPOSER_FILE = 2;
+		}
+	string relative_workspace_path = 1;
+	int32 start_line_number = 2;
+	repeated string lines = 3;
+	optional SummarizationStrategy summarization_strategy = 4;
+	string language_identifier = 5;
+	optional Intent intent = 6;
+	optional bool is_final_version = 7;
+	optional bool is_first_version = 8;
+}
+message SuggestedCodeBlock { // aiserver.v1.SuggestedCodeBlock
+	string relative_workspace_path = 1;
+}
+message RedDiff { // aiserver.v1.RedDiff
+	string relative_workspace_path = 1;
+	repeated SimplestRange red_ranges = 2;
+	repeated SimplestRange red_ranges_reversed = 3;
+	string start_hash = 4;
+	string end_hash = 5;
+}
+message LinterErrorsWithoutFileContents { // aiserver.v1.LinterErrorsWithoutFileContents
+	string relative_workspace_path = 1;
+	repeated LinterError errors = 2;
+}
+message DiffHistoryData { // aiserver.v1.DiffHistoryData
+	string relative_workspace_path = 1;
+	repeated ComposerFileDiff diffs = 2;
+	double timestamp = 3;
+	string unique_id = 4;
+	ComposerFileDiff start_to_end_diff = 5;
+}
+message ComposerFileDiff { // aiserver.v1.ComposerFileDiff
+		message ChunkDiff { // aiserver.v1.ComposerFileDiff.ChunkDiff
+			string diff_string = 1;
+			int32 old_start = 2;
+			int32 new_start = 3;
+			int32 old_lines = 4;
+			int32 new_lines = 5;
+			int32 lines_removed = 6;
+			int32 lines_added = 7;
+		}
+		enum Editor { // aiserver.v1.ComposerFileDiff.Editor
+			EDITOR_UNSPECIFIED = 0;
+			EDITOR_AI = 1;
+			EDITOR_HUMAN = 2;
+		}
+	repeated ChunkDiff chunks = 1;
+	Editor editor = 2;
+	bool hit_timeout = 3;
+}
+message ComposerFileDiffHistory { // aiserver.v1.ComposerFileDiffHistory
+	string file_name = 1;
+	repeated string diff_history = 2;
+	repeated double diff_history_timestamps = 3;
+}
+message ConversationSummary { // aiserver.v1.ConversationSummary
+	string summary = 1;
+	string truncation_last_bubble_id_inclusive = 2;
+	string client_should_start_sending_from_inclusive_bubble_id = 3;
+}
+message RepositoryInfo { // aiserver.v1.RepositoryInfo
+	string relative_workspace_path = 1;
+	repeated string remote_urls = 2;
+	repeated string remote_names = 3;
+	string repo_name = 4;
+	string repo_owner = 5;
+	bool is_tracked = 6;
+	bool is_local = 7;
+	optional int32 num_files = 8;
+	optional double orthogonal_transform_seed = 9;
+	optional EmbeddingModel preferred_embedding_model = 10;
+}
+message ExplicitContext { // aiserver.v1.ExplicitContext
+	string context = 1;
+	optional string repo_context = 2;
+}
+message ModelDetails { // aiserver.v1.ModelDetails
+	optional string model_name = 1;
+	optional string api_key = 2;
+	optional bool enable_ghost_mode = 3;
+	optional AzureState azure_state = 4;
+	optional bool enable_slow_pool = 5;
+	optional string openai_api_base_url = 6;
+}
+message AzureState { // aiserver.v1.AzureState
+	string api_key = 1;
+	string base_url = 2;
+	string deployment = 3;
+	bool use_azure = 4;
+}
+message ChatQuote { // aiserver.v1.ChatQuote
+	string markdown = 1;
+	string bubble_id = 2;
+	int32 section_index = 3;
+}
+message DebugInfo { // aiserver.v1.DebugInfo
+		message Breakpoint { // aiserver.v1.DebugInfo.Breakpoint
+			string relative_workspace_path = 1;
+			int32 line_number = 2;
+			repeated string lines_before_breakpoint = 3;
+			repeated string lines_after_breakpoint = 4;
+			optional string exception_info = 5;
+		}
+		message CallStackFrame { // aiserver.v1.DebugInfo.CallStackFrame
+				message Scope { // aiserver.v1.DebugInfo.Scope
+						message Variable { // aiserver.v1.DebugInfo.Variable
+							string name = 1;
+							string value = 2;
+							optional string type = 3;
+						}
+					string name = 1;
+					repeated Variable variables = 2;
+				}
+			string relative_workspace_path = 1;
+			int32 line_number = 2;
+			string function_name = 3;
+			repeated Scope scopes = 4;
+		}
+	Breakpoint breakpoint = 1;
+	repeated CallStackFrame call_stack = 2;
+	repeated CodeBlock history = 3;
+}
+message ChatExternalLink { // aiserver.v1.ChatExternalLink
+	string url = 1;
+	string uuid = 2;
+}
+message CommitNote { // aiserver.v1.CommitNote
+	string note = 1;
+	string commit_hash = 2;
+}
+message ContextAST { // aiserver.v1.ContextAST
+	repeated ContainerTree files = 1;
+}
+message ContainerTree { // aiserver.v1.ContainerTree
+	string relative_workspace_path = 1;
+	repeated ContainerTreeNode nodes = 2;
+}
+message ContainerTreeNode { // aiserver.v1.ContainerTreeNode
+		message Container { // aiserver.v1.ContainerTreeNode.Container
+				message Reference { // aiserver.v1.ContainerTreeNode.Reference
+					string value = 1;
+					string relative_workspace_path = 2;
+				}
+			string doc_string = 1;
+			string header = 2;
+			string trailer = 3;
+			repeated ContainerTreeNode children = 5;
+			repeated Reference references = 6;
+			double score = 7;
+		}
+		message Blob { // aiserver.v1.ContainerTreeNode.Blob
+			optional string value = 1;
+		}
+		message Symbol { // aiserver.v1.ContainerTreeNode.Symbol
+				message Reference { // aiserver.v1.ContainerTreeNode.Reference
+					string value = 1;
+					string relative_workspace_path = 2;
+				}
+			string doc_string = 1;
+			string value = 2;
+			repeated Reference references = 6;
+			double score = 7;
+		}
+	Container container = 1;
+	Blob blob = 2;
+	Symbol symbol = 3;
+}
+message StreamChatResponse { // aiserver.v1.StreamChatResponse
+		message ChunkIdentity { // aiserver.v1.StreamChatResponse.ChunkIdentity
+			string file_name = 1;
+			int32 start_line = 2;
+			int32 end_line = 3;
+			string text = 4;
+			ChunkType chunk_type = 5;
+		}
+	string text = 1;
+	optional string server_bubble_id = 22;
+	optional string debugging_only_chat_prompt = 2;
+	optional int32 debugging_only_token_count = 3;
+	DocumentationCitation document_citation = 4;
+	optional string filled_prompt = 5;
+	optional bool is_big_file = 6;
+	optional string intermediate_text = 7;
+	optional bool is_using_slow_request = 10;
+	optional ChunkIdentity chunk_identity = 8;
+	optional DocsReference docs_reference = 9;
+	optional WebCitation web_citation = 11;
+	optional StatusUpdates status_updates = 12;
+	optional ServerTimingInfo timing_info = 13;
+	optional SymbolLink symbol_link = 14;
+	optional FileLink file_link = 15;
+	optional ConversationSummary conversation_summary = 16;
+	optional ServiceStatusUpdate service_status_update = 17;
+}
+message DocumentationCitation { // aiserver.v1.DocumentationCitation
+	repeated DocumentationChunk chunks = 1;
+}
+message DocumentationChunk { // aiserver.v1.DocumentationChunk
+	string doc_name = 1;
+	string page_url = 2;
+	string documentation_chunk = 3;
+	float score = 4;
+	string page_title = 5;
+}
+message DocsReference { // aiserver.v1.DocsReference
+	string title = 1;
+	string url = 2;
+}
+message WebCitation { // aiserver.v1.WebCitation
+	repeated WebReference references = 1;
+}
+message WebReference { // aiserver.v1.WebReference
+	string title = 2;
+	string url = 1;
+}
+message StatusUpdates { // aiserver.v1.StatusUpdates
+	repeated StatusUpdate updates = 1;
+}
+message StatusUpdate { // aiserver.v1.StatusUpdate
+	string message = 1;
+	optional string metadata = 2;
+}
+message ServerTimingInfo { // aiserver.v1.ServerTimingInfo
+	double server_start_time = 1;
+	double server_first_token_time = 2;
+	double server_request_sent_time = 3;
+	double server_end_time = 4;
+}
+message SymbolLink { // aiserver.v1.SymbolLink
+	string symbol_name = 1;
+	string symbol_search_string = 2;
+	string relative_workspace_path = 3;
+	int32 rough_line_number = 4;
+}
+message FileLink { // aiserver.v1.FileLink
+	string display_name = 1;
+	string relative_workspace_path = 2;
+}
+message ServiceStatusUpdate { // aiserver.v1.ServiceStatusUpdate
+	string message = 1;
+	string codicon = 2;
+	optional bool allow_command_links_potentially_unsafe_please_only_use_for_handwritten_trusted_markdown = 3;
+}
+message RerankDocumentsRequest { // aiserver.v1.RerankDocumentsRequest
+	string query = 1;
+	repeated Document documents = 2;
+}
+message Document { // aiserver.v1.Document
+	string content = 1;
+	string id = 2;
+}
+message RerankDocumentsResponse { // aiserver.v1.RerankDocumentsResponse
+	repeated DocumentIdsWithScores documents = 1;
+}
+message DocumentIdsWithScores { // aiserver.v1.DocumentIdsWithScores
+	string document_id = 1;
+	float score = 2;
+}
+message GetComposerChatRequest { // aiserver.v1.GetComposerChatRequest
+		message RedDiff { // aiserver.v1.GetComposerChatRequest.RedDiff
+			string relative_workspace_path = 1;
+			repeated SimplestRange red_ranges = 2;
+			repeated SimplestRange red_ranges_reversed = 3;
+			string start_hash = 4;
+			string end_hash = 5;
+		}
+		message RecentEdits { // aiserver.v1.GetComposerChatRequest.RecentEdits
+				message CodeBlockInfo { // aiserver.v1.GetComposerChatRequest.RecentEdits.CodeBlockInfo
+					string relative_workspace_path = 1;
+					optional string content_before = 2;
+					optional string content_after = 3;
+					optional string generation_uuid = 4;
+					optional int32 version = 5;
+				}
+				message FileInfo { // aiserver.v1.GetComposerChatRequest.RecentEdits.FileInfo
+					string relative_workspace_path = 1;
+					string content = 2;
+				}
+			repeated CodeBlockInfo code_block_info = 1;
+			repeated FileInfo final_file_values = 2;
+			optional string edits_belong_to_composer_generation_uuid = 3;
+		}
+	repeated ConversationMessage conversation = 1;
+	optional bool allow_long_file_scan = 2;
+	ExplicitContext explicit_context = 3;
+	optional bool can_handle_filenames_after_language_ids = 4;
+	ModelDetails model_details = 5;
+	LinterErrors linter_errors = 6;
+	repeated string documentation_identifiers = 7;
+	optional string use_web = 8;
+	repeated ComposerExternalLink external_links = 9;
+	optional ConversationMessage project_context = 10;
+	repeated RedDiff diffs_for_compressing_files = 11;
+	optional bool compress_edits = 12;
+	optional bool should_cache = 13;
+	repeated LinterErrors multi_file_linter_errors = 14;
+	CurrentFileInfo current_file = 15;
+	optional RecentEdits recent_edits = 16;
+	optional bool use_reference_composer_diff_prompt = 17;
+	repeated ComposerFileDiffHistory file_diff_histories = 18;
+	optional bool use_new_compression_scheme = 19;
+	repeated RankedContext additional_ranked_context = 20;
+	repeated ChatQuote quotes = 21;
+	optional bool willing_to_pay_extra_for_speed = 22;
+}
+message ComposerExternalLink { // aiserver.v1.ComposerExternalLink
+	string url = 1;
+	string uuid = 2;
+}
+message RankedContext { // aiserver.v1.RankedContext
+	ContextToRank context = 1;
+	float score = 2;
+}
+message ContextToRank { // aiserver.v1.ContextToRank
+	string relative_workspace_path = 1;
+	string contents = 2;
+	optional LineRange line_range = 3;
+}
+message StreamChatContextRequest { // aiserver.v1.StreamChatContextRequest
+		message CodeContext { // aiserver.v1.StreamChatContextRequest.CodeContext
+			repeated CodeBlock chunks = 1;
+			repeated CodeResult scored_chunks = 2;
+		}
+	CurrentFileInfo current_file = 1;
+	repeated ConversationMessage conversation = 2;
+	repeated RepositoryInfo repositories = 3;
+	ExplicitContext explicit_context = 4;
+	optional string workspace_root_path = 5;
+	repeated CodeBlock code_blocks = 6;
+	ModelDetails model_details = 7;
+	repeated string documentation_identifiers = 8;
+	string query = 9;
+	CodeContext code_context = 10;
+	bool rerank_results = 11;
+	FullFileSearchResult file_search_results = 12;
+	CodeSearchResult code_search_results = 13;
+	LinterErrors linter_errors = 14;
+	optional bool is_bash = 15;
+	bool rerank_results_v2 = 16;
+	string conversation_id = 17;
+	bool can_handle_filenames_after_language_ids = 18;
+	bool long_context_mode = 19;
+	bool is_eval = 20;
+	string request_id = 21;
+	optional int32 desired_max_tokens = 22;
+	optional bool runnable_code_blocks = 23;
+}
+message FullFileSearchResult { // aiserver.v1.FullFileSearchResult
+	repeated FileResult results = 1;
+}
+message FileResult { // aiserver.v1.FileResult
+	File file = 1;
+	float score = 2;
+}
+message File { // aiserver.v1.File
+	string relative_workspace_path = 1;
+	string contents = 2;
+}
+message CodeSearchResult { // aiserver.v1.CodeSearchResult
+	repeated CodeResult results = 1;
+}
+message StreamChatContextResponse { // aiserver.v1.StreamChatContextResponse
+		message UsedCode { // aiserver.v1.StreamChatContextResponse.UsedCode
+			repeated CodeResult code_results = 1;
+		}
+		message CodeLink { // aiserver.v1.StreamChatContextResponse.CodeLink
+			string relative_workspace_path = 1;
+			int32 start_line_number = 2;
+			int32 end_line_number = 3;
+		}
+		message ChunkIdentity { // aiserver.v1.StreamChatContextResponse.ChunkIdentity
+			string file_name = 1;
+			int32 start_line = 2;
+			int32 end_line = 3;
+			string text = 4;
+			ChunkType chunk_type = 5;
+		}
+	string text = 1;
+	optional string debugging_only_chat_prompt = 2;
+	optional int32 debugging_only_token_count = 3;
+	DocumentationCitation document_citation = 4;
+	optional string filled_prompt = 5;
+	UsedCode used_code = 6;
+	CodeLink code_link = 7;
+	optional ChunkIdentity chunk_identity = 8;
+	optional DocsReference docs_reference = 9;
+	optional SymbolLink symbol_link = 10;
+	optional FileLink file_link = 11;
+}
+message WarmComposerCacheResponse { // aiserver.v1.WarmComposerCacheResponse
+	bool did_warm_cache = 1;
+}
+message KeepComposerCacheWarmRequest { // aiserver.v1.KeepComposerCacheWarmRequest
+	GetComposerChatRequest request = 1;
+	string request_id = 2;
+	bool is_composer_visible = 3;
+}
+message KeepComposerCacheWarmResponse { // aiserver.v1.KeepComposerCacheWarmResponse
+	bool did_keep_warm = 1;
+}
+message PotentialLocsRequest { // aiserver.v1.PotentialLocsRequest
+	string text = 1;
+}
+message PotentialLocsResponse { // aiserver.v1.PotentialLocsResponse
+	string potential_loc = 1;
+}
+message PotentialLocsUnderneathRequest { // aiserver.v1.PotentialLocsUnderneathRequest
+	string file = 1;
+	repeated SimplestRange ranges = 2;
+	string query = 3;
+}
+message PotentialLocsUnderneathResponse { // aiserver.v1.PotentialLocsUnderneathResponse
+	string text = 1;
+}
+message PotentialLocsInitialQueriesRequest { // aiserver.v1.PotentialLocsInitialQueriesRequest
+	string query = 1;
+}
+message PotentialLocsInitialQueriesResponse { // aiserver.v1.PotentialLocsInitialQueriesResponse
+	string hyde_query = 1;
+}
+message GetNotepadChatRequest { // aiserver.v1.GetNotepadChatRequest
+	repeated ConversationMessage conversation = 1;
+	optional bool allow_long_file_scan = 2;
+	ExplicitContext explicit_context = 3;
+	optional bool can_handle_filenames_after_language_ids = 4;
+	ModelDetails model_details = 5;
+	LinterErrors linter_errors = 6;
+	repeated string documentation_identifiers = 7;
+	optional string use_web = 8;
+	repeated ComposerExternalLink external_links = 9;
+	optional ConversationMessage project_context = 10;
+}
+message GetChatTitleRequest { // aiserver.v1.GetChatTitleRequest
+	repeated ConversationMessage conversation = 2;
+}
+message GetChatTitleResponse { // aiserver.v1.GetChatTitleResponse
+	string title = 1;
+}
+message GetCompletionRequest { // aiserver.v1.GetCompletionRequest
+	UniqueFileIdentifier file_identifier = 1;
+	CursorPosition cursor_position = 2;
+	SurroundingLines surrounding_lines = 3;
+	ExplicitContext explicit_context = 4;
+	repeated string suggestions_from_editor = 5;
+}
+message UniqueFileIdentifier { // aiserver.v1.UniqueFileIdentifier
+	string project_uuid = 1;
+	string relative_path = 2;
+	optional string language_id = 3;
+}
+message SurroundingLines { // aiserver.v1.SurroundingLines
+	int32 start_line = 1;
+	repeated string lines = 2;
+}
+message GetCompletionResponse { // aiserver.v1.GetCompletionResponse
+	string completion = 1;
+	float score = 2;
+	optional string debugging_only_completion_prompt = 3;
+}
+message GetSearchRequest { // aiserver.v1.GetSearchRequest
+	string query = 1;
+	repeated RepositoryInfo repositories = 2;
+	int32 top_k = 3;
+	repeated string restrict_to_buckets = 4;
+}
+message GetSearchResponse { // aiserver.v1.GetSearchResponse
+	repeated FileSearchResult results = 1;
+}
+message FileSearchResult { // aiserver.v1.FileSearchResult
+	string repository_relative_workspace_path = 1;
+	string file_relative_repository_path = 2;
+	string chunk = 3;
+	float distance = 4;
+}
+message StreamInlineEditsRequest { // aiserver.v1.StreamInlineEditsRequest
+	CurrentFileInfo current_file = 1;
+	string prompt = 2;
+	repeated RepositoryInfo repositories = 3;
+	ExplicitContext explicit_context = 4;
+}
+message StreamInlineEditsResponse { // aiserver.v1.StreamInlineEditsResponse
+	string line = 1;
+	optional string debugging_only_prompt = 2;
+	optional int32 debugging_only_token_count = 3;
+}
+message SummarizeConversationResponse { // aiserver.v1.SummarizeConversationResponse
+	bool did_summarize = 1;
+	int32 up_until_index = 2;
+	string summary = 3;
+}
+message IsolatedTreesitterRequest { // aiserver.v1.IsolatedTreesitterRequest
+	string file_content = 1;
+	string language_id = 2;
+	string command_id = 3;
+}
+message IsolatedTreesitterResponse { // aiserver.v1.IsolatedTreesitterResponse
+		message TreesitterSymbolNameItem { // aiserver.v1.IsolatedTreesitterResponse.TreesitterSymbolNameItem
+				message TreeSitterPosition { // aiserver.v1.IsolatedTreesitterResponse.TreeSitterPosition
+					int32 row = 1;
+					int32 column = 2;
+				}
+			string symbol_name = 1;
+			optional TreeSitterPosition start_position = 2;
+			optional TreeSitterPosition end_position = 3;
+		}
+	repeated TreesitterSymbolNameItem items = 1;
+}
+message GetSimplePromptRequest { // aiserver.v1.GetSimplePromptRequest
+	string query = 1;
+	string answer_placeholder = 2;
+}
+message GetSimplePromptResponse { // aiserver.v1.GetSimplePromptResponse
+	string result = 1;
+}
+message CheckLongFilesFitResponse { // aiserver.v1.CheckLongFilesFitResponse
+	bool did_fit = 1;
+}
+message GetEvaluationPromptRequest { // aiserver.v1.GetEvaluationPromptRequest
+		enum EvaluationPromptType { // aiserver.v1.GetEvaluationPromptRequest.EvaluationPromptType
+			EVALUATION_PROMPT_TYPE_UNSPECIFIED = 0;
+			EVALUATION_PROMPT_TYPE_GENERATE = 1;
+			EVALUATION_PROMPT_TYPE_CHAT = 2;
+		}
+		enum RerankingStrategy { // aiserver.v1.GetEvaluationPromptRequest.RerankingStrategy
+			RERANKING_STRATEGY_UNSPECIFIED = 0;
+			RERANKING_STRATEGY_DISTANCE_ONLY = 1;
+			RERANKING_STRATEGY_GPT4_RELEVANCE = 2;
+		}
+	EvaluationPromptType prompt_type = 1;
+	CurrentFileInfo current_file = 2;
+	string query = 3;
+	string bucket_id = 4;
+	string query_strategy = 5;
+	int32 token_limit = 6;
+	RerankingStrategy reranking_strategy = 7;
+}
+message GetEvaluationPromptResponse { // aiserver.v1.GetEvaluationPromptResponse
+	string prompt = 1;
+	int32 token_count = 2;
+	int32 estimated_token_count = 3;
+}
+message GetUserInfoRequest { // aiserver.v1.GetUserInfoRequest
+}
+message GetUserInfoResponse { // aiserver.v1.GetUserInfoResponse
+	string user_id = 1;
+	string jupyter_token = 2;
+	UsageData usage = 3;
+}
+message UsageData { // aiserver.v1.UsageData
+	int32 gpt4_requests = 2;
+	int32 gpt4_max_requests = 3;
+}
+message ClearAndRedoEntireBucketRequest { // aiserver.v1.ClearAndRedoEntireBucketRequest
+	string bucket_id = 1;
+	optional string commit = 2;
+}
+message ClearAndRedoEntireBucketResponse { // aiserver.v1.ClearAndRedoEntireBucketResponse
+}
+message StreamBranchGeminiRequest { // aiserver.v1.StreamBranchGeminiRequest
+		message PastThought { // aiserver.v1.StreamBranchGeminiRequest.PastThought
+			string text = 1;
+			double time_in_unix_seconds = 2;
+		}
+		message BranchDiff { // aiserver.v1.StreamBranchGeminiRequest.BranchDiff
+				message FileDiff { // aiserver.v1.StreamBranchGeminiRequest.BranchDiff.FileDiff
+					string file_name = 1;
+					string diff = 2;
+					bool too_big = 3;
+				}
+			repeated FileDiff file_diffs = 1;
+			repeated Commit commits = 2;
+		}
+		message File { // aiserver.v1.StreamBranchGeminiRequest.File
+			string relative_workspace_path = 1;
+			string text = 2;
+		}
+		message FileWithPriority { // aiserver.v1.StreamBranchGeminiRequest.FileWithPriority
+			string relative_workspace_path = 1;
+			string text = 2;
+			float priority = 3;
+		}
+	string branch_name = 1;
+	string branch_notes = 2;
+	string global_notes = 3;
+	repeated PastThought past_thoughts = 4;
+	BranchDiff diff_to_base_branch = 5;
+	repeated Commit potentially_relevant_commits = 6;
+	repeated File files = 7;
+	repeated FileWithPriority context_graph_files = 8;
+	repeated File crucial_files = 12;
+	optional string override_model = 9;
+	optional int32 override_token_limit = 10;
+}
+message StreamBranchGeminiResponse { // aiserver.v1.StreamBranchGeminiResponse
+	string text = 1;
+	optional string cached_prompt = 2;
+}
+message StreamBranchFileSelectionsRequest { // aiserver.v1.StreamBranchFileSelectionsRequest
+	string ai_response = 1;
+	optional string override_model = 2;
+	optional int32 override_token_limit = 3;
+}
+message StreamBranchFileSelectionsResponse { // aiserver.v1.StreamBranchFileSelectionsResponse
+		message FileInstruction { // aiserver.v1.StreamBranchFileSelectionsResponse.FileInstruction
+			string relative_workspace_path = 1;
+			string instruction = 2;
+		}
+	repeated FileInstruction file_instructions = 1;
+}
+message StreamBackgroundEditRequest { // aiserver.v1.StreamBackgroundEditRequest
+	CurrentFileInfo current_file = 1;
+	repeated RepositoryInfo repositories = 2;
+	ExplicitContext explicit_context = 3;
+	optional string workspace_root_path = 4;
+	string git_diff = 5;
+	repeated ConversationMessage conversation = 6;
+	string query = 7;
+	ModelDetails model_details = 8;
+	string stop = 9;
+	int32 import_line_in_diff = 10;
+}
+message StreamGPTFourEditRequest { // aiserver.v1.StreamGPTFourEditRequest
+	CurrentFileInfo current_file = 1;
+	repeated ConversationMessage conversation = 2;
+	repeated RepositoryInfo repositories = 3;
+	ExplicitContext explicit_context = 4;
+	optional string workspace_root_path = 5;
+	string query = 6;
+	repeated CodeBlock code_blocks = 7;
+	string session_id = 14;
+	ModelDetails model_details = 9;
+	repeated string documentation_identifiers = 10;
+	LinterErrors linter_errors = 11;
+	repeated CodeBlock prompt_code_blocks = 12;
+	bool fast_mode = 13;
+}
+message WarmChatCacheRequest { // aiserver.v1.WarmChatCacheRequest
+	GetChatRequest request = 1;
+}
+message WarmChatCacheResponse { // aiserver.v1.WarmChatCacheResponse
+	bool did_warm_cache = 1;
+}
+message StreamEditRequest { // aiserver.v1.StreamEditRequest
+	CurrentFileInfo current_file = 1;
+	repeated ConversationMessage conversation = 2;
+	repeated RepositoryInfo repositories = 3;
+	ExplicitContext explicit_context = 4;
+	optional string workspace_root_path = 5;
+	string query = 6;
+	repeated CodeBlock code_blocks = 7;
+	ModelDetails model_details = 9;
+	repeated string documentation_identifiers = 10;
+	LinterErrors linter_errors = 11;
+	repeated CodeBlock prompt_code_blocks = 12;
+	string session_id = 14;
+	CmdKDebugInfo cmd_k_debug_info = 13;
+	bool fast_mode = 15;
+	StreamEditRequest original_request = 16;
+	repeated ImageProto images = 17;
+	repeated CmdKExternalLink links = 18;
+}
+message CmdKDebugInfo { // aiserver.v1.CmdKDebugInfo
+		message UnsavedFiles { // aiserver.v1.CmdKDebugInfo.UnsavedFiles
+			string relative_workspace_path = 1;
+			string contents = 2;
+		}
+		message OpenEditor { // aiserver.v1.CmdKDebugInfo.OpenEditor
+			string relative_workspace_path = 1;
+			int32 editor_group_index = 2;
+			int32 editor_group_id = 3;
+			bool is_active = 4;
+		}
+		message CppFileDiffHistory { // aiserver.v1.CmdKDebugInfo.CppFileDiffHistory
+			string file_name = 1;
+			repeated string diff_history = 2;
+		}
+		message PastThought { // aiserver.v1.CmdKDebugInfo.PastThought
+			string text = 1;
+			double time_in_unix_seconds = 2;
+		}
+	string remote_url = 1;
+	string commit_id = 2;
+	string git_patch = 3;
+	repeated UnsavedFiles unsaved_files = 4;
+	double unix_timestamp_ms = 5;
+	repeated OpenEditor open_editors = 6;
+	repeated CppFileDiffHistory file_diff_histories = 7;
+	string branch_name = 8;
+	string branch_notes = 9;
+	string branch_notes_rich = 12;
+	string global_notes = 10;
+	repeated PastThought past_thoughts = 11;
+	string base_branch_name = 13;
+	string base_branch_commit_id = 14;
+}
+message CmdKExternalLink { // aiserver.v1.CmdKExternalLink
+	string url = 1;
+	string uuid = 2;
+}
+message PreloadEditRequest { // aiserver.v1.PreloadEditRequest
+	StreamEditRequest req = 1;
+}
+message PreloadEditResponse { // aiserver.v1.PreloadEditResponse
+}
+message StreamFastEditRequest { // aiserver.v1.StreamFastEditRequest
+	CurrentFileInfo current_file = 1;
+	repeated RepositoryInfo repositories = 3;
+	ExplicitContext explicit_context = 4;
+	optional string workspace_root_path = 5;
+	string query = 6;
+	repeated CodeBlock code_blocks = 7;
+	ModelDetails model_details = 9;
+	repeated string documentation_identifiers = 10;
+	LinterErrors linter_errors = 11;
+}
+message StreamFastEditResponse { // aiserver.v1.StreamFastEditResponse
+	int32 line_number = 2;
+	int32 replace_num_lines = 3;
+	string edit_uuid = 5;
+	optional bool done = 4;
+	optional string new_line = 6;
+	bool reset_new_lines = 7;
+}
+message StreamGenerateRequest { // aiserver.v1.StreamGenerateRequest
+	CurrentFileInfo current_file = 1;
+	repeated ConversationMessage conversation = 2;
+	repeated RepositoryInfo repositories = 3;
+	ExplicitContext explicit_context = 4;
+	optional string workspace_root_path = 5;
+	string query = 6;
+	repeated CodeBlock code_blocks = 7;
+	ModelDetails model_details = 9;
+	repeated string documentation_identifiers = 10;
+	LinterErrors linter_errors = 11;
+	repeated CodeBlock prompt_code_blocks = 12;
+	string session_id = 14;
+	CmdKDebugInfo cmd_k_debug_info = 13;
+	bool fast_mode = 15;
+	StreamGenerateRequest original_request = 16;
+}
+message StreamInlineLongCompletionRequest { // aiserver.v1.StreamInlineLongCompletionRequest
+		message ContextBlock { // aiserver.v1.StreamInlineLongCompletionRequest.ContextBlock
+				enum ContextType { // aiserver.v1.StreamInlineLongCompletionRequest.ContextBlock.ContextType
+					CONTEXT_TYPE_UNSPECIFIED = 0;
+					CONTEXT_TYPE_RECENT_LOCATIONS = 1;
+				}
+			ContextType context_type = 1;
+			repeated CodeBlock blocks = 2;
+		}
+	CurrentFileInfo current_file = 1;
+	repeated RepositoryInfo repositories = 6;
+	repeated ContextBlock context_blocks = 7;
+	ExplicitContext explicit_context = 13;
+	ModelDetails model_details = 14;
+	LinterErrors linter_errors = 15;
+}
+message SlashEditRequest { // aiserver.v1.SlashEditRequest
+		enum FastApplyModelType { // aiserver.v1.SlashEditRequest.FastApplyModelType
+			FAST_APPLY_MODEL_TYPE_UNSPECIFIED = 0;
+			FAST_APPLY_MODEL_TYPE_DEFAULT = 1;
+			FAST_APPLY_MODEL_TYPE_DEEPSEEK = 2;
+			FAST_APPLY_MODEL_TYPE_SONNET = 3;
+			FAST_APPLY_MODEL_TYPE_OPUS_DIFF = 4;
+			FAST_APPLY_MODEL_TYPE_SMART_REWRITE = 5;
+			FAST_APPLY_MODEL_TYPE_GPT4 = 6;
+			FAST_APPLY_MODEL_TYPE_GPT4_NOSPEC = 7;
+			FAST_APPLY_MODEL_TYPE_SMART_REWRITE_NOSPEC = 8;
+			FAST_APPLY_MODEL_TYPE_OPUS = 9;
+			FAST_APPLY_MODEL_TYPE_HAIKU = 10;
+			FAST_APPLY_MODEL_TYPE_GPT4O_NOSPEC = 11;
+			FAST_APPLY_MODEL_TYPE_GPT4O_DIFF = 12;
+			FAST_APPLY_MODEL_TYPE_CODESTRAL_REWRITE = 13;
+			FAST_APPLY_MODEL_TYPE_DEEPSEEK_33B = 14;
+			FAST_APPLY_MODEL_TYPE_SONNET_35_DIFF = 15;
+			FAST_APPLY_MODEL_TYPE_SONNET_35_REWRITE = 16;
+			FAST_APPLY_MODEL_TYPE_PROMPTED_DEEPSEEK_V2 = 17;
+			FAST_APPLY_MODEL_TYPE_CODESTRAL_REWRITE_OLD = 18;
+			FAST_APPLY_MODEL_TYPE_CODESTRAL_REWRITE_FP16 = 19;
+			FAST_APPLY_MODEL_TYPE_DEEPSEEK_33B_V2 = 20;
+			FAST_APPLY_MODEL_TYPE_CODESTRAL_V4 = 21;
+			FAST_APPLY_MODEL_TYPE_CODESTRAL_V5 = 22;
+			FAST_APPLY_MODEL_TYPE_CODESTRAL_V6 = 23;
+			FAST_APPLY_MODEL_TYPE_CODESTRAL_V7 = 24;
+		}
+	CurrentFileInfo current_file = 2;
+	repeated ConversationMessage conversation = 3;
+	ExplicitContext explicit_context = 4;
+	ModelDetails model_details = 7;
+	bool is_cmd_i = 8;
+	optional string summary = 11;
+	optional int32 summary_up_until_index = 12;
+	optional bool should_use_turbo_debug_prompt = 13;
+	optional LineRange edit_selection = 14;
+	repeated CurrentFileInfo files = 15;
+	optional string clicked_code_block_contents = 16;
+	optional bool is_an_optimistic_request_for_caching_and_linting = 17;
+	optional string specific_instructions = 18;
+	bool use_fast_apply = 19;
+	FastApplyModelType fast_apply_model_type = 20;
+	optional bool use_chunk_speculation_for_long_files = 25;
+	optional string parent_request_id = 26;
+	optional FastApplySource source = 27;
+	optional bool is_reapply = 28;
+	optional bool willing_to_pay_extra_for_speed = 29;
+}
+message SlashEditResponse { // aiserver.v1.SlashEditResponse
+	StreamCmdKResponse cmd_k_response = 1;
+}
+message StreamCmdKResponse { // aiserver.v1.StreamCmdKResponse
+		message EditStart { // aiserver.v1.StreamCmdKResponse.EditStart
+			int32 start_line_number = 1;
+			int32 edit_id = 2;
+			optional int32 max_end_line_number_exclusive = 3;
+			optional string file_path = 4;
+		}
+		message EditStream { // aiserver.v1.StreamCmdKResponse.EditStream
+			string text = 1;
+			int32 edit_id = 2;
+			optional string file_path = 3;
+		}
+		message EditEnd { // aiserver.v1.StreamCmdKResponse.EditEnd
+			int32 end_line_number_exclusive = 1;
+			int32 edit_id = 2;
+			optional string file_path = 3;
+		}
+		message Chat { // aiserver.v1.StreamCmdKResponse.Chat
+			string text = 1;
+		}
+		message StatusUpdate { // aiserver.v1.StreamCmdKResponse.StatusUpdate
+			repeated string messages = 1;
+		}
+	EditStart edit_start = 1;
+	EditStream edit_stream = 2;
+	EditEnd edit_end = 3;
+	Chat chat = 4;
+	StatusUpdate status_update = 5;
+}
+message SlashEditFollowUpWithPreviousEditsRequest { // aiserver.v1.SlashEditFollowUpWithPreviousEditsRequest
+	repeated ConversationMessage conversation = 1;
+	ModelDetails model_details = 2;
+	repeated SlashEditPreviousEdit previous_edits = 3;
+}
+message SlashEditPreviousEdit { // aiserver.v1.SlashEditPreviousEdit
+	repeated string original_lines = 1;
+	repeated string new_lines = 2;
+	string relative_workspace_path = 3;
+	LineRange range = 4;
+}
+message StreamSlashEditFollowUpWithPreviousEditsResponse { // aiserver.v1.StreamSlashEditFollowUpWithPreviousEditsResponse
+		message Chat { // aiserver.v1.StreamSlashEditFollowUpWithPreviousEditsResponse.Chat
+			string text = 1;
+		}
+		message EditsToUpdate { // aiserver.v1.StreamSlashEditFollowUpWithPreviousEditsResponse.EditsToUpdate
+			repeated SlashEditPreviousEdit previous_edits = 1;
+		}
+	Chat chat = 1;
+	EditsToUpdate edits_to_update = 2;
+}
+message StreamAiPreviewsRequest { // aiserver.v1.StreamAiPreviewsRequest
+	CurrentFileInfo current_file = 1;
+	StreamAiPreviewsIntent intent = 2;
+	ModelDetails model_details = 14;
+	optional bool is_detailed = 15;
+}
+message StreamAiPreviewsIntent { // aiserver.v1.StreamAiPreviewsIntent
+	repeated DocumentSymbolWithText main_symbols_to_analyze_from_go_to_def = 1;
+	HoverDetails main_symbol_hover_details = 4;
+	repeated DocumentSymbolWithText related_symbols = 3;
+	repeated DocumentSymbolWithText main_symbols_to_analyze_from_implementations = 6;
+}
+message DocumentSymbolWithText { // aiserver.v1.DocumentSymbolWithText
+	DocumentSymbol symbol = 1;
+	string relative_workspace_path = 2;
+	string text_in_symbol_range = 3;
+	UriComponents uri_components = 4;
+}
+message DocumentSymbol { // aiserver.v1.DocumentSymbol
+		enum SymbolKind { // aiserver.v1.DocumentSymbol.SymbolKind
+			SYMBOL_KIND_UNSPECIFIED = 0;
+			SYMBOL_KIND_FILE = 1;
+			SYMBOL_KIND_MODULE = 2;
+			SYMBOL_KIND_NAMESPACE = 3;
+			SYMBOL_KIND_PACKAGE = 4;
+			SYMBOL_KIND_CLASS = 5;
+			SYMBOL_KIND_METHOD = 6;
+			SYMBOL_KIND_PROPERTY = 7;
+			SYMBOL_KIND_FIELD = 8;
+			SYMBOL_KIND_CONSTRUCTOR = 9;
+			SYMBOL_KIND_ENUM = 10;
+			SYMBOL_KIND_INTERFACE = 11;
+			SYMBOL_KIND_FUNCTION = 12;
+			SYMBOL_KIND_VARIABLE = 13;
+			SYMBOL_KIND_CONSTANT = 14;
+			SYMBOL_KIND_STRING = 15;
+			SYMBOL_KIND_NUMBER = 16;
+			SYMBOL_KIND_BOOLEAN = 17;
+			SYMBOL_KIND_ARRAY = 18;
+			SYMBOL_KIND_OBJECT = 19;
+			SYMBOL_KIND_KEY = 20;
+			SYMBOL_KIND_NULL = 21;
+			SYMBOL_KIND_ENUM_MEMBER = 22;
+			SYMBOL_KIND_STRUCT = 23;
+			SYMBOL_KIND_EVENT = 24;
+			SYMBOL_KIND_OPERATOR = 25;
+			SYMBOL_KIND_TYPE_PARAMETER = 26;
+		}
+		message Range { // aiserver.v1.DocumentSymbol.Range
+			int32 start_line_number = 1;
+			int32 start_column = 2;
+			int32 end_line_number = 3;
+			int32 end_column = 4;
+		}
+	string name = 1;
+	string detail = 2;
+	SymbolKind kind = 3;
+	string container_name = 5;
+	Range range = 6;
+	Range selection_range = 7;
+	repeated DocumentSymbol children = 8;
+}
+message UriComponents { // aiserver.v1.UriComponents
+	string scheme = 1;
+	optional string authority = 2;
+	optional string path = 3;
+	optional string query = 4;
+	optional string fragment = 5;
+}
+message HoverDetails { // aiserver.v1.HoverDetails
+	string code_details = 1;
+	repeated string markdown_blocks = 2;
+}
+message StreamAiPreviewsResponse { // aiserver.v1.StreamAiPreviewsResponse
+	string text = 1;
+}
+message ShouldTurnOnCppOnboardingRequest { // aiserver.v1.ShouldTurnOnCppOnboardingRequest
+}
+message ShouldTurnOnCppOnboardingResponse { // aiserver.v1.ShouldTurnOnCppOnboardingResponse
+	bool should_turn_on_cpp_onboarding = 1;
+}
+message ReviewRequest { // aiserver.v1.ReviewRequest
+	string chunk = 1;
+	string file_context = 2;
+	LineRange chunk_range = 3;
+	optional string diff_string = 4;
+	optional string custom_instructions = 5;
+}
+message ReviewResponse { // aiserver.v1.ReviewResponse
+	string text = 1;
+	optional string prompt = 2;
+	optional string tldr = 3;
+	optional bool is_bug = 4;
+	repeated ReviewBug bugs = 5;
+}
+message ReviewBug { // aiserver.v1.ReviewBug
+	string id = 1;
+	optional int32 start_line = 2;
+	optional int32 end_line = 3;
+	optional string description = 4;
+	optional int32 severity = 5;
+	optional string tldr = 6;
+}
+message ReviewChatRequest { // aiserver.v1.ReviewChatRequest
+	string chunk = 1;
+	string file_context = 2;
+	LineRange chunk_range = 3;
+	repeated ReviewChatMessage messages = 4;
+}
+message ReviewChatMessage { // aiserver.v1.ReviewChatMessage
+		enum ReviewChatMessageType { // aiserver.v1.ReviewChatMessage.ReviewChatMessageType
+			REVIEW_CHAT_MESSAGE_TYPE_UNSPECIFIED = 0;
+			REVIEW_CHAT_MESSAGE_TYPE_HUMAN = 1;
+			REVIEW_CHAT_MESSAGE_TYPE_AI = 2;
+		}
+	string text = 1;
+	ReviewChatMessageType type = 2;
+}
+message ReviewChatResponse { // aiserver.v1.ReviewChatResponse
+	string text = 1;
+	optional bool should_resolve = 2;
+}
+message CheckQueuePositionRequest { // aiserver.v1.CheckQueuePositionRequest
+	string orig_request_id = 1;
+	ModelDetails model_details = 2;
+	string usage_uuid = 3;
+}
+message CheckQueuePositionResponse { // aiserver.v1.CheckQueuePositionResponse
+		message CustomLink { // aiserver.v1.CheckQueuePositionResponse.CustomLink
+			string address = 1;
+			string message = 2;
+		}
+	int32 position = 1;
+	optional int32 seconds_left_to_wait = 2;
+	optional int32 new_queue_position = 7;
+	bool hit_hard_limit = 3;
+	bool could_enable_usage_based_pricing_to_skip = 4;
+	UsageEventDetails usage_event_details = 5;
+	CustomLink custom_link = 6;
+}
+message UsageEventDetails { // aiserver.v1.UsageEventDetails
+		message Chat { // aiserver.v1.UsageEventDetails.Chat
+			string model_intent = 1;
+		}
+		message ContextChat { // aiserver.v1.UsageEventDetails.ContextChat
+			string model_intent = 1;
+		}
+		message CmdK { // aiserver.v1.UsageEventDetails.CmdK
+			string model_intent = 1;
+		}
+		message TerminalCmdK { // aiserver.v1.UsageEventDetails.TerminalCmdK
+			string model_intent = 1;
+		}
+		message AiReviewAcceptedComment { // aiserver.v1.UsageEventDetails.AiReviewAcceptedComment
+		}
+		message InterpreterChat { // aiserver.v1.UsageEventDetails.InterpreterChat
+			string model_intent = 1;
+		}
+		message SlashEdit { // aiserver.v1.UsageEventDetails.SlashEdit
+			string model_intent = 1;
+		}
+		message Composer { // aiserver.v1.UsageEventDetails.Composer
+			string model_intent = 1;
+		}
+		message FastApply { // aiserver.v1.UsageEventDetails.FastApply
+			bool is_optimistic = 1;
+			bool willing_to_pay_extra_for_speed = 2;
+		}
+		message WarmComposer { // aiserver.v1.UsageEventDetails.WarmComposer
+			string model_intent = 1;
+		}
+		message BugFinderTriggerV1 { // aiserver.v1.UsageEventDetails.BugFinderTriggerV1
+			bool in_background_subsidized = 1;
+			int32 cost_cents = 2;
+		}
+	Chat chat = 1;
+	ContextChat context_chat = 2;
+	CmdK cmd_k = 3;
+	TerminalCmdK terminal_cmd_k = 4;
+	AiReviewAcceptedComment ai_review_accepted_comment = 5;
+	InterpreterChat interpreter_chat = 6;
+	SlashEdit slash_edit = 7;
+	Composer composer = 8;
+	FastApply fast_apply = 9;
+	WarmComposer warm_composer = 10;
+	BugFinderTriggerV1 bug_finder_trigger_v1 = 11;
+}
+message CheckUsageBasedPriceRequest { // aiserver.v1.CheckUsageBasedPriceRequest
+	UsageEventDetails usage_event_details = 1;
+}
+message CheckUsageBasedPriceResponse { // aiserver.v1.CheckUsageBasedPriceResponse
+	string markdown_response = 1;
+	int32 cents = 2;
+	string price_id = 3;
+}
+message DoThisForMeCheckRequest { // aiserver.v1.DoThisForMeCheckRequest
+	string generation_uuid = 1;
+	string completion = 2;
+}
+message DoThisForMeCheckResponse { // aiserver.v1.DoThisForMeCheckResponse
+		message SkipAction { // aiserver.v1.DoThisForMeCheckResponse.SkipAction
+		}
+		message EditAction { // aiserver.v1.DoThisForMeCheckResponse.EditAction
+			string relative_workspace_path = 1;
+		}
+		message CreateAction { // aiserver.v1.DoThisForMeCheckResponse.CreateAction
+			string relative_workspace_path = 1;
+		}
+		message RunAction { // aiserver.v1.DoThisForMeCheckResponse.RunAction
+			string command = 1;
+		}
+	SkipAction skip_action = 1;
+	EditAction edit_action = 2;
+	CreateAction create_action = 3;
+	RunAction run_action = 4;
+	string reasoning = 5;
+}
+message DoThisForMeRequest { // aiserver.v1.DoThisForMeRequest
+	string generation_uuid = 1;
+	string completion = 2;
+	DoThisForMeCheckResponse action = 3;
+}
+message DoThisForMeResponseWrapped { // aiserver.v1.DoThisForMeResponseWrapped
+	DoThisForMeResponse real_response = 1;
+	string background_task_uuid = 2;
+}
+message DoThisForMeResponse { // aiserver.v1.DoThisForMeResponse
+		message UpdateStatus { // aiserver.v1.DoThisForMeResponse.UpdateStatus
+			string status = 1;
+		}
+	UpdateStatus update_status = 1;
+}
+message StreamChatToolformerResponse { // aiserver.v1.StreamChatToolformerResponse
+		message Output { // aiserver.v1.StreamChatToolformerResponse.Output
+			string text = 1;
+		}
+		message ToolAction { // aiserver.v1.StreamChatToolformerResponse.ToolAction
+			string user_facing_text = 1;
+			string raw_model_output = 3;
+			ToolCall tool_call = 2;
+			bool more_to_come = 4;
+		}
+		message Thought { // aiserver.v1.StreamChatToolformerResponse.Thought
+			string text = 1;
+		}
+	optional string toolformer_session_id = 1;
+	Output output = 2;
+	ToolAction tool_action = 3;
+	Thought thought = 4;
+}
+message ToolCall { // aiserver.v1.ToolCall
+	BuiltinToolCall builtin_tool_call = 1;
+	CustomToolCall custom_tool_call = 2;
+}
+message BuiltinToolCall { // aiserver.v1.BuiltinToolCall
+	BuiltinTool tool = 1;
+	SearchParams search_params = 2;
+	ReadChunkParams read_chunk_params = 3;
+	GotodefParams gotodef_params = 4;
+	EditParams edit_params = 5;
+	UndoEditParams undo_edit_params = 6;
+	EndParams end_params = 7;
+	NewFileParams new_file_params = 8;
+	AddTestParams add_test_params = 9;
+	RunTestParams run_test_params = 10;
+	DeleteTestParams delete_test_params = 11;
+	SaveFileParams save_file_params = 12;
+	GetTestsParams get_tests_params = 13;
+	GetSymbolsParams get_symbols_params = 14;
+	SemanticSearchParams semantic_search_params = 15;
+	GetProjectStructureParams get_project_structure_params = 16;
+	CreateRmFilesParams create_rm_files_params = 17;
+	RunTerminalCommandsParams run_terminal_commands_params = 18;
+	NewEditParams new_edit_params = 19;
+	ReadWithLinterParams read_with_linter_params = 20;
+	AddUiStepParams add_ui_step_params = 21;
+	ReadSemsearchFilesParams read_semsearch_files_params = 23;
+	ReadFileForImportsParams read_file_for_imports_params = 24;
+	CreateFileParams create_file_params = 25;
+	DeleteFileParams delete_file_params = 26;
+	optional string tool_call_id = 22;
+}
+message SearchParams { // aiserver.v1.SearchParams
+	string query = 1;
+	bool regex = 2;
+	string include_pattern = 3;
+	string exclude_pattern = 4;
+	bool filename_search = 5;
+}
+message ReadChunkParams { // aiserver.v1.ReadChunkParams
+	string relative_workspace_path = 1;
+	int32 start_line_number = 2;
+	optional int32 num_lines = 3;
+}
+message GotodefParams { // aiserver.v1.GotodefParams
+	string relative_workspace_path = 1;
+	int32 line_number = 2;
+	string symbol = 3;
+}
+message EditParams { // aiserver.v1.EditParams
+		enum FrontendEditType { // aiserver.v1.EditParams.FrontendEditType
+			FRONTEND_EDIT_TYPE_UNSPECIFIED = 0;
+			FRONTEND_EDIT_TYPE_INLINE_DIFFS = 1;
+			FRONTEND_EDIT_TYPE_SIMPLE = 2;
+		}
+	string relative_workspace_path = 1;
+	optional int32 line_number = 2;
+	int32 replace_num_lines = 3;
+	repeated string new_lines = 4;
+	optional bool replace_whole_file = 7;
+	string edit_id = 5;
+	FrontendEditType frontend_edit_type = 6;
+	optional bool auto_fix_all_linter_errors_in_file = 8;
+}
+message UndoEditParams { // aiserver.v1.UndoEditParams
+}
+message EndParams { // aiserver.v1.EndParams
+}
+message NewFileParams { // aiserver.v1.NewFileParams
+	string relative_workspace_path = 1;
+}
+message AddTestParams { // aiserver.v1.AddTestParams
+	string relative_workspace_path = 1;
+	string test_name = 2;
+	string test_code = 3;
+}
+message RunTestParams { // aiserver.v1.RunTestParams
+	string relative_workspace_path = 1;
+	optional string test_name = 2;
+}
+message DeleteTestParams { // aiserver.v1.DeleteTestParams
+	string relative_workspace_path = 1;
+	optional string test_name = 2;
+}
+message SaveFileParams { // aiserver.v1.SaveFileParams
+	string relative_workspace_path = 1;
+}
+message GetTestsParams { // aiserver.v1.GetTestsParams
+	string relative_workspace_path = 1;
+}
+message GetSymbolsParams { // aiserver.v1.GetSymbolsParams
+		message LineRange { // aiserver.v1.GetSymbolsParams.LineRange
+			int32 start_line_number = 1;
+			int32 end_line_number_inclusive = 2;
+		}
+	string relative_workspace_path = 1;
+	optional LineRange line_range = 2;
+	bool include_children = 3;
+}
+message SemanticSearchParams { // aiserver.v1.SemanticSearchParams
+	string query = 1;
+	optional string include_pattern = 2;
+	optional string exclude_pattern = 3;
+	int32 top_k = 4;
+	optional string index_id = 5;
+	bool grab_whole_file = 6;
+}
+message GetProjectStructureParams { // aiserver.v1.GetProjectStructureParams
+}
+message CreateRmFilesParams { // aiserver.v1.CreateRmFilesParams
+	repeated string removed_file_paths = 1;
+	repeated string created_file_paths = 2;
+	repeated string created_directory_paths = 3;
+}
+message RunTerminalCommandsParams { // aiserver.v1.RunTerminalCommandsParams
+	repeated string commands = 1;
+	string commands_uuid = 2;
+}
+message NewEditParams { // aiserver.v1.NewEditParams
+	string relative_workspace_path = 1;
+	optional int32 start_line_number = 2;
+	optional int32 end_line_number = 3;
+	string text = 4;
+	string edit_id = 5;
+	bool first_edit = 6;
+}
+message ReadWithLinterParams { // aiserver.v1.ReadWithLinterParams
+	string relative_workspace_path = 1;
+}
+message AddUiStepParams { // aiserver.v1.AddUiStepParams
+		message SearchResults { // aiserver.v1.AddUiStepParams.SearchResults
+				message SearchResult { // aiserver.v1.AddUiStepParams.SearchResult
+					string relative_workspace_path = 1;
+				}
+			repeated SearchResult search_results = 1;
+		}
+	string conversation_id = 1;
+	SearchResults search_results = 2;
+}
+message ReadSemsearchFilesParams { // aiserver.v1.ReadSemsearchFilesParams
+	RepositoryInfo repository_info = 1;
+	repeated CodeResult code_results = 2;
+	string query = 3;
+}
+message ReadFileForImportsParams { // aiserver.v1.ReadFileForImportsParams
+	string relative_file_path = 1;
+}
+message CreateFileParams { // aiserver.v1.CreateFileParams
+	string relative_workspace_path = 1;
+}
+message DeleteFileParams { // aiserver.v1.DeleteFileParams
+	string relative_workspace_path = 1;
+}
+message CustomToolCall { // aiserver.v1.CustomToolCall
+	string tool_id = 1;
+	string params = 2;
+}
+message StreamChatToolformerContinueRequest { // aiserver.v1.StreamChatToolformerContinueRequest
+	string toolformer_session_id = 1;
+	ToolResult tool_result = 2;
+}
+message ToolResult { // aiserver.v1.ToolResult
+	BuiltinToolResult builtin_tool_result = 1;
+	CustomToolResult custom_tool_result = 2;
+	ErrorToolResult error_tool_result = 3;
+}
+message BuiltinToolResult { // aiserver.v1.BuiltinToolResult
+	BuiltinTool tool = 1;
+	SearchResult search_result = 2;
+	ReadChunkResult read_chunk_result = 3;
+	GotodefResult gotodef_result = 4;
+	EditResult edit_result = 5;
+	UndoEditResult undo_edit_result = 6;
+	EndResult end_result = 7;
+	NewFileResult new_file_result = 8;
+	AddTestResult add_test_result = 9;
+	RunTestResult run_test_result = 10;
+	DeleteTestResult delete_test_result = 11;
+	SaveFileResult save_file_result = 12;
+	GetTestsResult get_tests_result = 13;
+	GetSymbolsResult get_symbols_result = 14;
+	SemanticSearchResult semantic_search_result = 15;
+	GetProjectStructureResult get_project_structure_result = 16;
+	CreateRmFilesResult create_rm_files_result = 17;
+	RunTerminalCommandsResult run_terminal_commands_result = 18;
+	NewEditResult new_edit_result = 19;
+	ReadWithLinterResult read_with_linter_result = 20;
+	AddUiStepResult add_ui_step_result = 21;
+	ReadSemsearchFilesResult read_semsearch_files_result = 22;
+	CreateFileResult create_file_result = 23;
+	DeleteFileResult delete_file_result = 24;
+}
+message SearchResult { // aiserver.v1.SearchResult
+	repeated SearchToolFileSearchResult file_results = 1;
+	int32 num_total_matches = 2;
+	int32 num_total_matched_files = 3;
+	bool num_total_may_be_incomplete = 4;
+	bool files_only = 5;
+}
+message SearchToolFileSearchResult { // aiserver.v1.SearchToolFileSearchResult
+		message Line { // aiserver.v1.SearchToolFileSearchResult.Line
+			int32 line_number = 1;
+			string text = 2;
+		}
+	string relative_workspace_path = 1;
+	int32 num_matches = 2;
+	repeated Line potentially_relevant_lines = 3;
+	bool cropped = 4;
+}
+message ReadChunkResult { // aiserver.v1.ReadChunkResult
+	string relative_workspace_path = 1;
+	int32 start_line_number = 2;
+	repeated string lines = 3;
+	int32 total_num_lines = 4;
+	bool cropped = 5;
+}
+message GotodefResult { // aiserver.v1.GotodefResult
+	repeated GotodefToolFileSearchResult results = 1;
+}
+message GotodefToolFileSearchResult { // aiserver.v1.GotodefToolFileSearchResult
+		message Line { // aiserver.v1.GotodefToolFileSearchResult.Line
+			int32 line_number = 1;
+			string text = 2;
+		}
+	string relative_workspace_path = 1;
+	repeated Line potentially_relevant_lines = 3;
+}
+message EditResult { // aiserver.v1.EditResult
+		message Feedback { // aiserver.v1.EditResult.Feedback
+				message RelatedInformation { // aiserver.v1.EditResult.RelatedInformation
+					string message = 1;
+					int32 start_line_number = 2;
+					int32 end_line_number = 3;
+					string relative_workspace_path = 4;
+				}
+			string message = 1;
+			string severity = 2;
+			int32 start_line_number = 3;
+			int32 end_line_number = 4;
+			repeated RelatedInformation related_information = 5;
+		}
+	repeated string feedback = 1;
+	int32 context_start_line_number = 2;
+	repeated string context_lines = 3;
+	string file = 4;
+	int32 file_total_lines = 5;
+	repeated Feedback structured_feedback = 6;
+}
+message UndoEditResult { // aiserver.v1.UndoEditResult
+	repeated string feedback = 1;
+	string relative_workspace_path = 4;
+	int32 context_start_line_number = 2;
+	repeated string context_lines = 3;
+	int32 context_total_num_lines = 5;
+	int32 file_total_lines = 6;
+}
+message EndResult { // aiserver.v1.EndResult
+}
+message NewFileResult { // aiserver.v1.NewFileResult
+	string relative_workspace_path = 1;
+	int32 file_total_lines = 2;
+}
+message AddTestResult { // aiserver.v1.AddTestResult
+		message Feedback { // aiserver.v1.AddTestResult.Feedback
+				message RelatedInformation { // aiserver.v1.AddTestResult.RelatedInformation
+					string message = 1;
+					int32 start_line_number = 2;
+					int32 end_line_number = 3;
+					string relative_workspace_path = 4;
+				}
+			string message = 1;
+			string severity = 2;
+			int32 start_line_number = 3;
+			int32 end_line_number = 4;
+			repeated RelatedInformation related_information = 5;
+		}
+	repeated Feedback feedback = 1;
+}
+message RunTestResult { // aiserver.v1.RunTestResult
+	string result = 1;
+}
+message DeleteTestResult { // aiserver.v1.DeleteTestResult
+}
+message SaveFileResult { // aiserver.v1.SaveFileResult
+}
+message GetTestsResult { // aiserver.v1.GetTestsResult
+		message Test { // aiserver.v1.GetTestsResult.Test
+			string name = 1;
+			repeated string lines = 2;
+		}
+	repeated Test tests = 1;
+}
+message GetSymbolsResult { // aiserver.v1.GetSymbolsResult
+	repeated DocumentSymbol symbols = 1;
+}
+message SemanticSearchResult { // aiserver.v1.SemanticSearchResult
+		message Item { // aiserver.v1.SemanticSearchResult.Item
+			string relative_workspace_path = 1;
+			float score = 2;
+			string content = 3;
+			SimpleRange range = 4;
+			optional string original_content = 5;
+			repeated DetailedLine detailed_lines = 6;
+		}
+	repeated Item results = 1;
+}
+message SimpleRange { // aiserver.v1.SimpleRange
+	int32 start_line_number = 1;
+	int32 start_column = 2;
+	int32 end_line_number_inclusive = 3;
+	int32 end_column = 4;
+}
+message GetProjectStructureResult { // aiserver.v1.GetProjectStructureResult
+		message File { // aiserver.v1.GetProjectStructureResult.File
+			string relative_workspace_path = 1;
+			string outline = 2;
+		}
+	repeated File files = 1;
+	string root_workspace_path = 2;
+}
+message CreateRmFilesResult { // aiserver.v1.CreateRmFilesResult
+	repeated string created_file_paths = 1;
+	repeated string removed_file_paths = 2;
+}
+message RunTerminalCommandsResult { // aiserver.v1.RunTerminalCommandsResult
+	repeated string outputs = 1;
+}
+message NewEditResult { // aiserver.v1.NewEditResult
+}
+message ReadWithLinterResult { // aiserver.v1.ReadWithLinterResult
+	string contents = 1;
+	repeated Diagnostic diagnostics = 2;
+}
+message AddUiStepResult { // aiserver.v1.AddUiStepResult
+}
+message CustomToolResult { // aiserver.v1.CustomToolResult
+	string tool_id = 1;
+	string result = 2;
+}
+message ErrorToolResult { // aiserver.v1.ErrorToolResult
+	string error_message = 1;
+}
+message PushAiThoughtRequest { // aiserver.v1.PushAiThoughtRequest
+		message Metadata { // aiserver.v1.PushAiThoughtRequest.Metadata
+				message AcceptedHallucinatedFunctionEvent { // aiserver.v1.PushAiThoughtRequest.Metadata.AcceptedHallucinatedFunctionEvent
+					string implementation_uuid = 1;
+					string hallucinated_function_uuid = 2;
+					string implementation = 3;
+					string source = 4;
+					string implementation_reqid = 5;
+					string plan_reqid = 6;
+					string reflection_reqid = 7;
+				}
+			AcceptedHallucinatedFunctionEvent accepted_hallucinated_function_event = 1;
+		}
+	string thought = 1;
+	CmdKDebugInfo cmd_k_debug_info = 2;
+	bool automated = 3;
+	optional Metadata metadata = 4;
+}
+message PushAiThoughtResponse { // aiserver.v1.PushAiThoughtResponse
+}
+message CheckDoableAsTaskRequest { // aiserver.v1.CheckDoableAsTaskRequest
+	string model_output = 1;
+	ModelDetails model_details = 2;
+}
+message CheckDoableAsTaskResponse { // aiserver.v1.CheckDoableAsTaskResponse
+	bool doable_as_task = 1;
+}
+message ReportGroundTruthCandidateRequest { // aiserver.v1.ReportGroundTruthCandidateRequest
+	string request_id = 1;
+	int32 time_since_completed_action_ms = 2;
+	FeatureType feature_type = 3;
+	string relative_workspace_path = 4;
+	string contents = 5;
+	LineRange selection_in_question = 6;
+	int32 lines_above_and_below = 7;
+}
+message ReportGroundTruthCandidateResponse { // aiserver.v1.ReportGroundTruthCandidateResponse
+}
+message ReportCmdKFateRequest { // aiserver.v1.ReportCmdKFateRequest
+		enum Fate { // aiserver.v1.ReportCmdKFateRequest.Fate
+			FATE_UNSPECIFIED = 0;
+			FATE_CANCELLED = 1;
+			FATE_ACCEPTED = 2;
+			FATE_REJECTED = 3;
+			FATE_FOLLOWED_UP = 4;
+			FATE_REPROMPTED = 5;
+		}
+	string request_id = 1;
+	Fate fate = 2;
+}
+message ReportCmdKFateResponse { // aiserver.v1.ReportCmdKFateResponse
+}
+message ShowWelcomeScreenRequest { // aiserver.v1.ShowWelcomeScreenRequest
+}
+message ShowWelcomeScreenResponse { // aiserver.v1.ShowWelcomeScreenResponse
+	repeated string enable_cards = 1;
+}
+message InterfaceAgentInitRequest { // aiserver.v1.InterfaceAgentInitRequest
+	ModelDetails model_details = 1;
+	bool debugging_only_live_mode = 2;
+	InterfaceAgentClientState interface_agent_client_state = 3;
+}
+message InterfaceAgentClientState { // aiserver.v1.InterfaceAgentClientState
+	string interface_relative_workspace_path = 3;
+	repeated string interface_lines = 4;
+	optional string test_relative_workspace_path = 5;
+	repeated string test_lines = 10;
+	optional string implementation_relative_workspace_path = 6;
+	repeated string implementation_lines = 7;
+	string language = 8;
+	string testing_framework = 9;
+}
+message InterfaceAgentInitResponse { // aiserver.v1.InterfaceAgentInitResponse
+	string task_uuid = 1;
+	string human_readable_title = 2;
+}
+message StreamInterfaceAgentStatusRequest { // aiserver.v1.StreamInterfaceAgentStatusRequest
+	string task_uuid = 1;
+}
+message StreamInterfaceAgentStatusResponse { // aiserver.v1.StreamInterfaceAgentStatusResponse
+	InterfaceAgentStatus status = 1;
+}
+message InterfaceAgentStatus { // aiserver.v1.InterfaceAgentStatus
+		enum Status { // aiserver.v1.InterfaceAgentStatus.Status
+			STATUS_UNSPECIFIED = 0;
+			STATUS_WAITING = 1;
+			STATUS_RUNNING = 2;
+			STATUS_SUCCESS = 3;
+			STATUS_FAILURE = 4;
+		}
+	Status validate_configuration = 1;
+	Status stub_new_function = 2;
+	Status verify_spec = 3;
+	Status write_test_plan = 15;
+	Status write_tests = 4;
+	Status write_implementation = 5;
+	Status implement_new_function = 6;
+	Status run_tests = 7;
+	string validate_configuration_message = 8;
+	string stub_new_function_message = 9;
+	string verify_spec_message = 10;
+	string write_test_plan_message = 16;
+	string write_tests_message = 11;
+	string write_implementation_message = 12;
+	string implement_new_function_message = 13;
+	string run_tests_message = 14;
+}
+message TaskGetInterfaceAgentStatusRequest { // aiserver.v1.TaskGetInterfaceAgentStatusRequest
+	InterfaceAgentClientState interface_agent_client_state = 1;
+}
+message TaskGetInterfaceAgentStatusResponseWrapped { // aiserver.v1.TaskGetInterfaceAgentStatusResponseWrapped
+	TaskGetInterfaceAgentStatusResponse real_response = 1;
+	string background_task_uuid = 2;
+}
+message TaskGetInterfaceAgentStatusResponse { // aiserver.v1.TaskGetInterfaceAgentStatusResponse
+	InterfaceAgentStatus status = 1;
+}
+message TaskInitRequest { // aiserver.v1.TaskInitRequest
+	TaskInstruction instruction = 1;
+	ModelDetails model_details = 2;
+	bool debugging_only_live_mode = 3;
+	optional string engine_id = 4;
+}
+message TaskInstruction { // aiserver.v1.TaskInstruction
+		message CodeChunk { // aiserver.v1.TaskInstruction.CodeChunk
+			string relative_workspace_path = 1;
+			int32 start_line_number = 2;
+			repeated string lines = 3;
+		}
+	string text = 1;
+	repeated CodeChunk attached_code_chunks = 2;
+	CurrentFileInfo current_file = 3;
+	repeated RepositoryInfo repositories = 4;
+	ExplicitContext explicit_context = 5;
+}
+message TaskInitResponse { // aiserver.v1.TaskInitResponse
+	string task_uuid = 1;
+	string human_readable_title = 2;
+}
+message TaskPauseRequest { // aiserver.v1.TaskPauseRequest
+	string task_uuid = 1;
+}
+message TaskPauseResponse { // aiserver.v1.TaskPauseResponse
+}
+message TaskInfoRequest { // aiserver.v1.TaskInfoRequest
+	string task_uuid = 1;
+}
+message TaskInfoResponse { // aiserver.v1.TaskInfoResponse
+	string human_readable_title = 1;
+	TaskStatus task_status = 2;
+	int32 last_log_sequence_number = 3;
+}
+message TaskStreamLogRequest { // aiserver.v1.TaskStreamLogRequest
+	string task_uuid = 1;
+	int32 start_sequence_number = 2;
+}
+message TaskStreamLogResponse { // aiserver.v1.TaskStreamLogResponse
+		message InfoUpdate { // aiserver.v1.TaskStreamLogResponse.InfoUpdate
+			optional string human_readable_title = 1;
+			optional TaskStatus task_status = 2;
+		}
+	TaskLogItem streamed_log_item = 1;
+	InfoUpdate info_update = 2;
+	TaskInfoResponse initial_task_info = 3;
+}
+message TaskLogItem { // aiserver.v1.TaskLogItem
+	int32 sequence_number = 1;
+	bool is_not_done = 2;
+	TaskLogOutput output = 3;
+	TaskLogToolAction tool_action = 4;
+	TaskLogThought thought = 5;
+	TaskUserMessage user_message = 6;
+	TaskInstruction instruction = 7;
+	TaskLogToolResult tool_result = 8;
+}
+message TaskLogOutput { // aiserver.v1.TaskLogOutput
+	string text = 1;
+}
+message TaskLogToolAction { // aiserver.v1.TaskLogToolAction
+	string user_facing_text = 1;
+	string raw_model_output = 3;
+	ToolCall tool_call = 2;
+}
+message TaskLogThought { // aiserver.v1.TaskLogThought
+	string text = 1;
+}
+message TaskUserMessage { // aiserver.v1.TaskUserMessage
+		message CodeChunk { // aiserver.v1.TaskUserMessage.CodeChunk
+			string relative_workspace_path = 1;
+			int32 start_line_number = 2;
+			repeated string lines = 3;
+		}
+	string text = 1;
+	repeated CodeChunk attached_code_chunks = 2;
+}
+message TaskLogToolResult { // aiserver.v1.TaskLogToolResult
+	ToolResult tool_result = 1;
+	int32 action_sequence_number = 2;
+}
+message TaskSendMessageRequest { // aiserver.v1.TaskSendMessageRequest
+	string task_uuid = 1;
+	TaskUserMessage user_message = 2;
+	bool wants_attention_right_now = 3;
+}
+message TaskSendMessageResponse { // aiserver.v1.TaskSendMessageResponse
+}
+message TaskProvideResultRequest { // aiserver.v1.TaskProvideResultRequest
+	string task_uuid = 1;
+	int32 action_sequence_number = 2;
+	ToolResult tool_result = 3;
+}
+message TaskProvideResultResponse { // aiserver.v1.TaskProvideResultResponse
+}
+message CreateExperimentalIndexRequest { // aiserver.v1.CreateExperimentalIndexRequest
+	repeated string files = 1;
+	string target_dir = 2;
+	string repo = 3;
+}
+message CreateExperimentalIndexResponse { // aiserver.v1.CreateExperimentalIndexResponse
+	string index_id = 1;
+}
+message ListExperimentalIndexFilesRequest { // aiserver.v1.ListExperimentalIndexFilesRequest
+	string index_id = 1;
+}
+message ListExperimentalIndexFilesResponse { // aiserver.v1.ListExperimentalIndexFilesResponse
+	string index_id = 1;
+	repeated IndexFileData files = 2;
+}
+message IndexFileData { // aiserver.v1.IndexFileData
+		message NodeData { // aiserver.v1.IndexFileData.NodeData
+			string node_id = 1;
+			string stage = 2;
+			string content = 3;
+			string summary = 4;
+		}
+	string index_id = 1;
+	string workspace_relative_path = 2;
+	string stage = 3;
+	int32 order = 4;
+	repeated NodeData nodes = 5;
+}
+message ListenExperimentalIndexRequest { // aiserver.v1.ListenExperimentalIndexRequest
+	string index_id = 1;
+}
+message ListenExperimentalIndexResponse { // aiserver.v1.ListenExperimentalIndexResponse
+		message ReadyItem { // aiserver.v1.ListenExperimentalIndexResponse.ReadyItem
+			string index_id = 1;
+			ListenExperimentalIndexRequest request = 2;
+		}
+		message RegisterItem { // aiserver.v1.ListenExperimentalIndexResponse.RegisterItem
+			RegisterFileToIndexResponse response = 1;
+			RegisterFileToIndexRequest request = 2;
+			string req_uuid = 3;
+		}
+		message ChooseItem { // aiserver.v1.ListenExperimentalIndexResponse.ChooseItem
+			ChooseCodeReferencesResponse response = 1;
+			ChooseCodeReferencesRequest request = 2;
+			string req_uuid = 3;
+		}
+		message SummarizeItem { // aiserver.v1.ListenExperimentalIndexResponse.SummarizeItem
+			SummarizeWithReferencesResponse response = 1;
+			SummarizeWithReferencesRequest request = 2;
+			string req_uuid = 3;
+		}
+		message ErrorItem { // aiserver.v1.ListenExperimentalIndexResponse.ErrorItem
+			string message = 1;
+			int32 status_code = 2;
+			RegisterFileToIndexRequest register = 3;
+			ChooseCodeReferencesRequest choose = 4;
+			SummarizeWithReferencesRequest summarize = 5;
+			string req_uuid = 6;
+		}
+	string index_id = 1;
+	ReadyItem ready = 2;
+	RegisterItem register = 3;
+	ChooseItem choose = 4;
+	SummarizeItem summarize = 5;
+	ErrorItem error = 6;
+}
+message RegisterFileToIndexResponse { // aiserver.v1.RegisterFileToIndexResponse
+	string file_id = 1;
+	string root_context_node_id = 2;
+	repeated URIResolutionAttempt dependency_resolution_attempts = 3;
+	IndexFileData file_data = 4;
+}
+message URIResolutionAttempt { // aiserver.v1.URIResolutionAttempt
+	string workspace_relative_path = 1;
+	string node_id = 2;
+	CodeSymbolWithAction symbol = 3;
+}
+message CodeSymbolWithAction { // aiserver.v1.CodeSymbolWithAction
+		enum CodeSymbolAction { // aiserver.v1.CodeSymbolWithAction.CodeSymbolAction
+			CODE_SYMBOL_ACTION_UNSPECIFIED = 0;
+			CODE_SYMBOL_ACTION_GO_TO_DEFINITION = 1;
+			CODE_SYMBOL_ACTION_GO_TO_IMPLEMENTATION = 2;
+			CODE_SYMBOL_ACTION_REFERENCES = 3;
+		}
+	string workspace_relative_path = 1;
+	int32 line_number = 2;
+	int32 symbol_start_column = 3;
+	int32 symbol_end_column = 4;
+	CodeSymbolAction action = 5;
+	string symbol = 6;
+}
+message RegisterFileToIndexRequest { // aiserver.v1.RegisterFileToIndexRequest
+	string index_id = 1;
+	string workspace_relative_path = 2;
+	SerializedContextNode root_context_node = 3;
+	repeated string content = 4;
+}
+message SerializedContextNode { // aiserver.v1.SerializedContextNode
+	string workspace_relative_path = 1;
+	int32 start_line_number = 2;
+	int32 end_line_number = 3;
+	repeated SerializedContextNode children = 4;
+	FileCodeSnippets node_snippets = 5;
+}
+message FileCodeSnippets { // aiserver.v1.FileCodeSnippets
+	string relative_workspace_path = 1;
+	int32 total_lines = 2;
+	repeated CodeSnippet snippets = 3;
+}
+message CodeSnippet { // aiserver.v1.CodeSnippet
+	int32 start_line_number = 1;
+	int32 end_line_number = 2;
+	repeated string lines = 3;
+}
+message ChooseCodeReferencesResponse { // aiserver.v1.ChooseCodeReferencesResponse
+		message FileResponse { // aiserver.v1.ChooseCodeReferencesResponse.FileResponse
+				message NodeResponse { // aiserver.v1.ChooseCodeReferencesResponse.NodeResponse
+					string node_id = 1;
+					repeated CodeSymbolWithAction actions = 2;
+					bool skipped = 3;
+					repeated string dependencies = 4;
+				}
+			string file_id = 1;
+			repeated NodeResponse node_responses = 2;
+		}
+		message NodeResponse { // aiserver.v1.ChooseCodeReferencesResponse.NodeResponse
+			string node_id = 1;
+			repeated CodeSymbolWithAction actions = 2;
+			bool skipped = 3;
+			repeated string dependencies = 4;
+		}
+	FileResponse file = 1;
+	NodeResponse node = 2;
+}
+message ChooseCodeReferencesRequest { // aiserver.v1.ChooseCodeReferencesRequest
+		message FileRequest { // aiserver.v1.ChooseCodeReferencesRequest.FileRequest
+			string file_id = 1;
+		}
+		message NodeRequest { // aiserver.v1.ChooseCodeReferencesRequest.NodeRequest
+			string node_id = 1;
+		}
+	string index_id = 1;
+	FileRequest file = 2;
+	NodeRequest node = 3;
+	bool recompute = 4;
+}
+message SummarizeWithReferencesResponse { // aiserver.v1.SummarizeWithReferencesResponse
+		message Success { // aiserver.v1.SummarizeWithReferencesResponse.Success
+			string summary = 1;
+		}
+		message Dependency { // aiserver.v1.SummarizeWithReferencesResponse.Dependency
+			repeated string nodes = 2;
+		}
+	Success success = 1;
+	Dependency dependency = 2;
+	string node_id = 3;
+}
+message SummarizeWithReferencesRequest { // aiserver.v1.SummarizeWithReferencesRequest
+	string index_id = 1;
+	string node_id = 2;
+	bool recompute = 3;
+}
+message RequestReceivedResponse { // aiserver.v1.RequestReceivedResponse
+	string req_uuid = 1;
+}
+message SetupIndexDependenciesRequest { // aiserver.v1.SetupIndexDependenciesRequest
+	string index_id = 1;
+	string file_id = 3;
+	repeated URIResolutionResult dependency_resolution_results = 2;
+}
+message URIResolutionResult { // aiserver.v1.URIResolutionResult
+	URIResolutionAttempt request = 1;
+	repeated string resolved_paths = 2;
+}
+message SetupIndexDependenciesResponse { // aiserver.v1.SetupIndexDependenciesResponse
+}
+message ComputeIndexTopoSortRequest { // aiserver.v1.ComputeIndexTopoSortRequest
+	string index_id = 1;
+}
+message ComputeIndexTopoSortResponse { // aiserver.v1.ComputeIndexTopoSortResponse
+}
+message StreamChatDeepContextRequest { // aiserver.v1.StreamChatDeepContextRequest
+	repeated ConversationMessage conversation = 1;
+	ExplicitContext explicit_context = 2;
+	ModelDetails model_details = 3;
+	SearchRepositoryDeepContextResponse context_results = 4;
+	bool rerank_results = 5;
+}
+message SearchRepositoryDeepContextResponse { // aiserver.v1.SearchRepositoryDeepContextResponse
+	repeated NodeResult top_nodes = 1;
+	repeated ReflectionResult reflections = 2;
+	string index_id = 3;
+}
+message NodeResult { // aiserver.v1.NodeResult
+		message NodeData { // aiserver.v1.IndexFileData.NodeData
+			string node_id = 1;
+			string stage = 2;
+			string content = 3;
+			string summary = 4;
+		}
+	NodeData node = 1;
+	File file = 2;
+	float score = 3;
+}
+message ReflectionResult { // aiserver.v1.ReflectionResult
+	ReflectionData reflection = 1;
+	float score = 2;
+}
+message ReflectionData { // aiserver.v1.ReflectionData
+	string index_id = 1;
+	string id = 2;
+	string summary = 3;
+}
+message StreamChatDeepContextResponse { // aiserver.v1.StreamChatDeepContextResponse
+	string text = 1;
+}
+message RegisterCodeReferencesRequest { // aiserver.v1.RegisterCodeReferencesRequest
+	string node_id = 1;
+	repeated SymbolActionResults references = 2;
+}
+message SymbolActionResults { // aiserver.v1.SymbolActionResults
+	CodeSymbolWithAction action = 1;
+	repeated SymbolActionResultReference references = 2;
+}
+message SymbolActionResultReference { // aiserver.v1.SymbolActionResultReference
+	SimpleRange range = 1;
+	FileCodeSnippets reference = 2;
+}
+message RegisterCodeReferencesResponse { // aiserver.v1.RegisterCodeReferencesResponse
+	repeated string dependencies = 1;
+}
+message ExtractPathsRequest { // aiserver.v1.ExtractPathsRequest
+	FileCodeSnippets file_code_snippets = 1;
+}
+message ExtractPathsResponse { // aiserver.v1.ExtractPathsResponse
+	repeated CodeSymbolWithAction paths = 1;
+}
+message DocumentationQueryRequest { // aiserver.v1.DocumentationQueryRequest
+	string doc_identifier = 1;
+	string query = 2;
+	uint32 top_k = 3;
+	bool rerank_results = 4;
+}
+message DocumentationQueryResponse { // aiserver.v1.DocumentationQueryResponse
+		enum Status { // aiserver.v1.DocumentationQueryResponse.Status
+			STATUS_UNSPECIFIED = 0;
+			STATUS_NOT_FOUND = 1;
+			STATUS_SUCCESS = 2;
+			STATUS_FAILURE = 3;
+		}
+	string doc_identifier = 1;
+	string doc_name = 2;
+	repeated DocumentationChunk doc_chunks = 3;
+	Status status = 4;
+}
+message AvailableDocsRequest { // aiserver.v1.AvailableDocsRequest
+	string partial_url = 1;
+	string partial_doc_name = 2;
+	bool get_all = 3;
+	repeated string additional_doc_identifiers = 4;
+}
+message AvailableDocsResponse { // aiserver.v1.AvailableDocsResponse
+	repeated DocumentationInfo docs = 1;
+}
+message DocumentationInfo { // aiserver.v1.DocumentationInfo
+	string doc_identifier = 1;
+	DocumentationMetadata metadata = 2;
+}
+message DocumentationMetadata { // aiserver.v1.DocumentationMetadata
+	string prefix_url = 1;
+	string doc_name = 2;
+	bool is_different_prefix_origin = 3;
+	string true_prefix_url = 4;
+	bool public = 5;
+	optional int32 team_id = 6;
+}
+message ReportFeedbackRequest { // aiserver.v1.ReportFeedbackRequest
+		enum FeedbackType { // aiserver.v1.ReportFeedbackRequest.FeedbackType
+			FEEDBACK_TYPE_UNSPECIFIED = 0;
+			FEEDBACK_TYPE_LOW_PRIORITY = 1;
+			FEEDBACK_TYPE_HIGH_PRIORITY = 2;
+		}
+	string feedback = 1;
+	FeedbackType feedback_type = 2;
+}
+message ReportFeedbackResponse { // aiserver.v1.ReportFeedbackResponse
+}
+message ReportBugRequest { // aiserver.v1.ReportBugRequest
+		enum BugType { // aiserver.v1.ReportBugRequest.BugType
+			BUG_TYPE_UNSPECIFIED = 0;
+			BUG_TYPE_LOW = 1;
+			BUG_TYPE_MEDIUM = 2;
+			BUG_TYPE_URGENT = 3;
+			BUG_TYPE_CRASH = 4;
+			BUG_TYPE_CONNECTION_ERROR = 5;
+			BUG_TYPE_IDEA = 6;
+			BUG_TYPE_MISC_AUTOMATIC_ERROR = 7;
+		}
+	string bug = 1;
+	BugType bug_type = 2;
+	BugContext context = 3;
+	string contact_email = 4;
+}
+message BugContext { // aiserver.v1.BugContext
+		enum Error { // aiserver.v1.ErrorDetails.Error
+			ERROR_UNSPECIFIED = 0;
+			ERROR_BAD_API_KEY = 1;
+			ERROR_BAD_USER_API_KEY = 2;
+			ERROR_NOT_LOGGED_IN = 3;
+			ERROR_INVALID_AUTH_ID = 4;
+			ERROR_NOT_HIGH_ENOUGH_PERMISSIONS = 5;
+			ERROR_AGENT_REQUIRES_LOGIN = 6;
+			ERROR_BAD_MODEL_NAME = 7;
+			ERROR_NOT_FOUND = 8;
+			ERROR_DEPRECATED = 9;
+			ERROR_USER_NOT_FOUND = 10;
+			ERROR_FREE_USER_RATE_LIMIT_EXCEEDED = 11;
+			ERROR_PRO_USER_RATE_LIMIT_EXCEEDED = 12;
+			ERROR_FREE_USER_USAGE_LIMIT = 13;
+			ERROR_PRO_USER_USAGE_LIMIT = 14;
+			ERROR_RESOURCE_EXHAUSTED = 15;
+			ERROR_AUTH_TOKEN_NOT_FOUND = 16;
+			ERROR_AUTH_TOKEN_EXPIRED = 17;
+			ERROR_OPENAI = 18;
+			ERROR_OPENAI_RATE_LIMIT_EXCEEDED = 19;
+			ERROR_OPENAI_ACCOUNT_LIMIT_EXCEEDED = 20;
+			ERROR_TASK_UUID_NOT_FOUND = 21;
+			ERROR_TASK_NO_PERMISSIONS = 22;
+			ERROR_AGENT_ENGINE_NOT_FOUND = 23;
+			ERROR_MAX_TOKENS = 24;
+			ERROR_PRO_USER_ONLY = 25;
+			ERROR_API_KEY_NOT_SUPPORTED = 26;
+			ERROR_USER_ABORTED_REQUEST = 27;
+			ERROR_GENERIC_RATE_LIMIT_EXCEEDED = 28;
+			ERROR_SLASH_EDIT_FILE_TOO_LONG = 29;
+			ERROR_FILE_UNSUPPORTED = 30;
+			ERROR_GPT_4_VISION_PREVIEW_RATE_LIMIT = 31;
+			ERROR_CUSTOM_MESSAGE = 32;
+			ERROR_OUTDATED_CLIENT = 33;
+			ERROR_CLAUDE_IMAGE_TOO_LARGE = 34;
+			ERROR_GITGRAPH_NOT_FOUND = 35;
+			ERROR_FILE_NOT_FOUND = 36;
+			ERROR_API_KEY_RATE_LIMIT = 37;
+			ERROR_DEBOUNCED = 38;
+			ERROR_BAD_REQUEST = 39;
+			ERROR_REPOSITORY_SERVICE_REPOSITORY_IS_NOT_INITIALIZED = 40;
+			ERROR_UNAUTHORIZED = 41;
+		}
+	repeated string screenshots = 1;
+	CurrentFileInfo current_file = 2;
+	repeated ConversationMessage conversation = 3;
+	repeated LogFile logs = 4;
+	string console_logs = 5;
+	string cursor_version = 6;
+	string os = 7;
+	string proto_url = 8;
+	string failing_requst_id = 9;
+	string connection_error_raw = 10;
+	CmdKDebugInfo debug_info = 12;
+	optional int32 connect_error_code = 13;
+	optional Error error_detail_code = 14;
+	optional string error_detail_title = 15;
+	optional string error_detail_detail = 16;
+}
+message LogFile { // aiserver.v1.LogFile
+	string relative_path_to_cursor_folder = 1;
+	string contents = 2;
+}
+message ReportBugResponse { // aiserver.v1.ReportBugResponse
+}
+message GenerateTldrRequest { // aiserver.v1.GenerateTldrRequest
+	string text = 1;
+}
+message GenerateTldrResponse { // aiserver.v1.GenerateTldrResponse
+	string summary = 1;
+	string all = 2;
+}
+message TaskStreamChatContextRequest { // aiserver.v1.TaskStreamChatContextRequest
+	CurrentFileInfo current_file = 1;
+	repeated ConversationMessage conversation = 2;
+	repeated RepositoryInfo repositories = 3;
+	ExplicitContext explicit_context = 4;
+	optional string workspace_root_path = 5;
+	repeated CodeBlock code_blocks = 6;
+	ModelDetails model_details = 7;
+	repeated string documentation_identifiers = 8;
+	LinterErrors linter_errors = 14;
+	AdvancedCodebaseContextOptions advanced_codebase_context = 15;
+	optional bool is_eval = 16;
+	string request_id = 17;
+	optional int32 desired_token_limit = 18;
+}
+message AdvancedCodebaseContextOptions { // aiserver.v1.AdvancedCodebaseContextOptions
+	int32 num_results_per_search = 1;
+	optional string include_pattern = 2;
+	optional string exclude_pattern = 3;
+	RerankerAlgorithm reranker = 4;
+	optional string index_id = 5;
+	bool reasoning_step = 6;
+	optional RechunkerChoice rechunker = 7;
+}
+message TaskStreamChatContextResponseWrapped { // aiserver.v1.TaskStreamChatContextResponseWrapped
+	TaskStreamChatContextResponse real_response = 1;
+	string background_task_uuid = 2;
+}
+message TaskStreamChatContextResponse { // aiserver.v1.TaskStreamChatContextResponse
+		message Output { // aiserver.v1.TaskStreamChatContextResponse.Output
+			string text = 1;
+		}
+		message GatheringStep { // aiserver.v1.TaskStreamChatContextResponse.GatheringStep
+			string title = 1;
+			int32 index = 2;
+			string query = 3;
+		}
+		message GatheringFile { // aiserver.v1.TaskStreamChatContextResponse.GatheringFile
+			string relative_workspace_path = 1;
+			SimpleRange range = 2;
+			int32 step_index = 3;
+			float score = 4;
+		}
+		message RerankingStep { // aiserver.v1.TaskStreamChatContextResponse.RerankingStep
+			string title = 1;
+			int32 index = 2;
+		}
+		message RerankingFile { // aiserver.v1.TaskStreamChatContextResponse.RerankingFile
+			string relative_workspace_path = 1;
+			SimpleRange range = 2;
+			string reason = 3;
+			bool failed = 4;
+			float score = 5;
+			int32 step_index = 6;
+		}
+		message ReasoningStep { // aiserver.v1.TaskStreamChatContextResponse.ReasoningStep
+			string title = 1;
+			int32 index = 2;
+		}
+		message ReasoningSubstep { // aiserver.v1.TaskStreamChatContextResponse.ReasoningSubstep
+			string markdown_explanation = 1;
+			int32 step_index = 2;
+		}
+	Output output = 1;
+	GatheringStep gathering_step = 2;
+	GatheringFile gathering_file = 3;
+	RerankingStep reranking_step = 4;
+	RerankingFile reranking_file = 5;
+	ReasoningStep reasoning_step = 6;
+	ReasoningSubstep reasoning_substep = 7;
+}
+message RerankerRequest { // aiserver.v1.RerankerRequest
+	repeated CodeResult code_results = 1;
+	string query = 2;
+	int32 num_blocks = 3;
+	CurrentFileInfo current_file = 4;
+	repeated ConversationMessage conversation = 5;
+	ApiDetails api_details = 6;
+	FullFileSearchResult file_search_results = 7;
+	CodeSearchResult code_search_results = 8;
+}
+message ApiDetails { // aiserver.v1.ApiDetails
+	string api_key = 1;
+	optional bool enable_ghost_mode = 2;
+}
+message RerankerResponse { // aiserver.v1.RerankerResponse
+	repeated CodeResult results = 1;
+}
+message ModelQueryRequest { // aiserver.v1.ModelQueryRequest
+		enum QueryType { // aiserver.v1.ModelQueryRequest.QueryType
+			QUERY_TYPE_UNSPECIFIED = 0;
+			QUERY_TYPE_KEYWORDS = 1;
+			QUERY_TYPE_EMBEDDINGS = 2;
+		}
+	CurrentFileInfo current_file = 1;
+	repeated ConversationMessage conversation = 2;
+	repeated RepositoryInfo repositories = 3;
+	ExplicitContext explicit_context = 4;
+	optional string workspace_root_path = 5;
+	repeated CodeBlock code_blocks = 6;
+	ModelDetails model_details = 7;
+	QueryType query_type = 8;
+	RepositoryInfo repository_info = 9;
+	bool faster_and_stupider = 10;
+	bool use_globs = 11;
+}
+message ModelQueryResponse { // aiserver.v1.ModelQueryResponse
+		message Query { // aiserver.v1.ModelQueryResponse.Query
+			string query = 1;
+			bool successful_parse = 2;
+			repeated string good_file_extensions = 3;
+			repeated string bad_file_extensions = 4;
+			repeated string good_paths = 5;
+			repeated string bad_paths = 6;
+		}
+	repeated Query queries = 1;
+}
+message ModelQueryResponseV2 { // aiserver.v1.ModelQueryResponseV2
+		message QueryItem { // aiserver.v1.ModelQueryResponseV2.QueryItem
+			string text = 1;
+			string glob = 2;
+			int32 index = 3;
+		}
+	QueryItem query = 1;
+	string reasoning = 2;
+}
+message IntentPredictionRequest { // aiserver.v1.IntentPredictionRequest
+	repeated ConversationMessage messages = 1;
+	ContextOptions context_options = 2;
+	ModelDetails model_details = 3;
+}
+message ContextOptions { // aiserver.v1.ContextOptions
+		message AllDocumentation { // aiserver.v1.ContextOptions.AllDocumentation
+				message Documentation { // aiserver.v1.ContextOptions.AllDocumentation.Documentation
+					string name = 1;
+					string url = 2;
+					string identifier = 3;
+				}
+			repeated Documentation available_docs = 1;
+		}
+		message CurrentFileContents { // aiserver.v1.ContextOptions.CurrentFileContents
+			string relative_workspace_path = 1;
+			string contents = 2;
+			CursorPosition cursor_position = 3;
+			repeated DataframeInfo dataframes = 4;
+			string language_id = 5;
+			CursorRange selection = 6;
+		}
+		message LinterDiagnostics { // aiserver.v1.ContextOptions.LinterDiagnostics
+				message Diagnostic { // aiserver.v1.ContextOptions.LinterDiagnostics.Diagnostic
+					string message = 1;
+					string source = 2;
+					CursorRange range = 3;
+					string relative_workspace_path = 4;
+				}
+			string relative_workspace_path = 1;
+			string contents = 2;
+			repeated Diagnostic diagnostics = 3;
+		}
+		message GlobalContext { // aiserver.v1.ContextOptions.GlobalContext
+		}
+	AllDocumentation all_documentation = 1;
+	CurrentFileContents current_file_contents = 2;
+	LinterDiagnostics linter_diagnostics = 3;
+	GlobalContext global_context = 4;
+}
+message IntentPredictionResponse { // aiserver.v1.IntentPredictionResponse
+		message ChosenDocumentation { // aiserver.v1.IntentPredictionResponse.ChosenDocumentation
+			repeated int32 doc_indices = 1;
+			repeated string doc_identifiers = 2;
+			repeated string doc_names = 3;
+		}
+		message ChosenFileContents { // aiserver.v1.IntentPredictionResponse.ChosenFileContents
+		}
+		message ChosenLinterDiagnostics { // aiserver.v1.IntentPredictionResponse.ChosenLinterDiagnostics
+			repeated int32 diagnostic_indices = 1;
+		}
+	ChosenDocumentation chosen_documentation = 1;
+	ChosenFileContents chosen_file_contents = 2;
+	ChosenLinterDiagnostics chosen_linter_diagnostics = 3;
+	bool use_global_context = 4;
+	bool use_with_folder_context = 5;
+}
+message StreamCursorTutorRequest { // aiserver.v1.StreamCursorTutorRequest
+	repeated ConversationMessage conversation = 1;
+	ModelDetails model_details = 2;
+}
+message StreamCursorTutorResponse { // aiserver.v1.StreamCursorTutorResponse
+	string text = 1;
+}
+message CheckFeatureStatusRequest { // aiserver.v1.CheckFeatureStatusRequest
+	string feature_name = 1;
+}
+message CheckFeatureStatusResponse { // aiserver.v1.CheckFeatureStatusResponse
+	bool enabled = 1;
+}
+message GetEffectiveTokenLimitRequest { // aiserver.v1.GetEffectiveTokenLimitRequest
+	ModelDetails model_details = 1;
+}
+message GetEffectiveTokenLimitResponse { // aiserver.v1.GetEffectiveTokenLimitResponse
+	int32 token_limit = 1;
+}
+message ContextScoresRequest { // aiserver.v1.ContextScoresRequest
+	string source_range = 1;
+	repeated string method_signatures = 2;
+}
+message ContextScoresResponse { // aiserver.v1.ContextScoresResponse
+	repeated float scores = 1;
+}
+message StreamCppRequest { // aiserver.v1.StreamCppRequest
+		enum ControlToken { // aiserver.v1.StreamCppRequest.ControlToken
+			CONTROL_TOKEN_UNSPECIFIED = 0;
+			CONTROL_TOKEN_QUIET = 1;
+			CONTROL_TOKEN_LOUD = 2;
+			CONTROL_TOKEN_OP = 3;
+		}
+	CurrentFileInfo current_file = 1;
+	repeated string diff_history = 2;
+	optional string model_name = 3;
+	optional LinterErrors linter_errors = 4;
+	repeated CppContextItem context_items = 13;
+	repeated string diff_history_keys = 5;
+	optional bool give_debug_output = 6;
+	repeated CppFileDiffHistory file_diff_histories = 7;
+	repeated CppFileDiffHistory merged_diff_histories = 8;
+	repeated BlockDiffPatch block_diff_patches = 9;
+	optional bool is_nightly = 10;
+	optional bool is_debug = 11;
+	optional bool immediately_ack = 12;
+	optional bool enable_more_context = 17;
+	repeated CppParameterHint parameter_hints = 14;
+	repeated LspSubgraphFullContext lsp_contexts = 15;
+	optional CppIntentInfo cpp_intent_info = 16;
+	optional string workspace_id = 18;
+	repeated AdditionalFile additional_files = 19;
+	optional ControlToken control_token = 20;
+	optional double client_time = 21;
+	repeated FilesyncUpdateWithModelVersion filesync_updates = 22;
+	double time_since_request_start = 23;
+	double time_at_request_send = 24;
+}
+message CppContextItem { // aiserver.v1.CppContextItem
+	string contents = 1;
+	optional string symbol = 2;
+	string relative_workspace_path = 3;
+	float score = 4;
+}
+message CppFileDiffHistory { // aiserver.v1.CppFileDiffHistory
+	string file_name = 1;
+	repeated string diff_history = 2;
+	repeated double diff_history_timestamps = 3;
+}
+message BlockDiffPatch { // aiserver.v1.BlockDiffPatch
+		message ModelWindow { // aiserver.v1.BlockDiffPatch.ModelWindow
+			repeated string lines = 1;
+			int32 start_line_number = 2;
+			int32 end_line_number = 3;
+		}
+		message Change { // aiserver.v1.BlockDiffPatch.Change
+			string text = 1;
+			IRange range = 2;
+		}
+	ModelWindow start_model_window = 1;
+	repeated Change changes = 3;
+	string relative_path = 4;
+	string model_uuid = 7;
+	int32 start_from_change_index = 5;
+}
+message IRange { // aiserver.v1.IRange
+	int32 start_line_number = 1;
+	int32 start_column = 2;
+	int32 end_line_number = 3;
+	int32 end_column = 4;
+}
+message CppParameterHint { // aiserver.v1.CppParameterHint
+	string label = 1;
+	optional string documentation = 2;
+}
+message LspSubgraphFullContext { // aiserver.v1.LspSubgraphFullContext
+	string uri = 1;
+	string symbol_name = 2;
+	repeated LspSubgraphPosition positions = 3;
+	repeated LspSubgraphContextItem context_items = 4;
+	float score = 5;
+}
+message LspSubgraphPosition { // aiserver.v1.LspSubgraphPosition
+	int32 line = 1;
+	int32 character = 2;
+}
+message LspSubgraphContextItem { // aiserver.v1.LspSubgraphContextItem
+	optional string uri = 1;
+	string type = 2;
+	string content = 3;
+	optional LspSubgraphRange range = 4;
+}
+message LspSubgraphRange { // aiserver.v1.LspSubgraphRange
+	int32 start_line = 1;
+	int32 start_character = 2;
+	int32 end_line = 3;
+	int32 end_character = 4;
+}
+message CppIntentInfo { // aiserver.v1.CppIntentInfo
+	string source = 1;
+}
+message AdditionalFile { // aiserver.v1.AdditionalFile
+	string relative_workspace_path = 1;
+	bool is_open = 2;
+	repeated string visible_range_content = 3;
+	optional double last_viewed_at = 4;
+}
+message FilesyncUpdateWithModelVersion { // aiserver.v1.FilesyncUpdateWithModelVersion
+	int32 model_version = 1;
+	string relative_workspace_path = 2;
+	repeated SingleUpdateRequest updates = 3;
+	int32 expected_file_length = 4;
+}
+message SingleUpdateRequest { // aiserver.v1.SingleUpdateRequest
+	int32 start_position = 1;
+	int32 end_position = 2;
+	int32 change_length = 3;
+	string replaced_string = 4;
+	SimpleRange range = 5;
+}
+message StreamCppResponse { // aiserver.v1.StreamCppResponse
+	string text = 1;
+	optional int32 suggestion_start_line = 2;
+	optional int32 suggestion_confidence = 3;
+	optional bool done_stream = 4;
+	optional string debug_model_output = 5;
+	optional string debug_model_input = 6;
+	optional string debug_stream_time = 7;
+	optional string debug_total_time = 8;
+	optional string debug_ttft_time = 9;
+	optional string debug_server_timing = 10;
+	optional LineRange range_to_replace = 11;
+}
+message CppConfigRequest { // aiserver.v1.CppConfigRequest
+	optional bool is_nightly = 1;
+	string model = 2;
+}
+message CppConfigResponse { // aiserver.v1.CppConfigResponse
+		message MergeBehavior { // aiserver.v1.CppConfigResponse.MergeBehavior
+			string type = 1;
+			optional int32 limit = 2;
+			optional int32 radius = 3;
+		}
+		enum Heuristic { // aiserver.v1.CppConfigResponse.Heuristic
+			HEURISTIC_UNSPECIFIED = 0;
+			HEURISTIC_LOTS_OF_ADDED_TEXT = 1;
+			HEURISTIC_DUPLICATING_LINE_AFTER_SUGGESTION = 2;
+			HEURISTIC_DUPLICATING_MULTIPLE_LINES_AFTER_SUGGESTION = 3;
+			HEURISTIC_REVERTING_USER_CHANGE = 4;
+			HEURISTIC_OUTPUT_EXTENDS_BEYOND_RANGE_AND_IS_REPEATED = 5;
+			HEURISTIC_SUGGESTING_RECENTLY_REJECTED_EDIT = 6;
+		}
+		message ImportPredictionConfig { // aiserver.v1.CppConfigResponse.ImportPredictionConfig
+			bool is_disabled_by_backend = 1;
+			bool should_turn_on_automatically = 2;
+			bool python_enabled = 3;
+		}
+		message RecentlyRejectedEditThresholds { // aiserver.v1.CppConfigResponse.RecentlyRejectedEditThresholds
+			int32 hard_reject_threshold = 1;
+			int32 soft_reject_threshold = 2;
+		}
+	optional int32 above_radius = 1;
+	optional int32 below_radius = 2;
+	optional MergeBehavior merge_behavior = 4;
+	optional bool is_on = 5;
+	optional bool is_ghost_text = 6;
+	optional bool should_let_user_enable_cpp_even_if_not_pro = 7;
+	repeated Heuristic heuristics = 8;
+	repeated string exclude_recently_viewed_files_patterns = 9;
+	bool enable_rvf_tracking = 10;
+	int32 global_debounce_duration_millis = 11;
+	int32 client_debounce_duration_millis = 12;
+	string cpp_url = 13;
+	bool use_whitespace_diff_history = 14;
+	ImportPredictionConfig import_prediction_config = 15;
+	bool enable_filesync_debounce_skipping = 16;
+	float check_filesync_hash_percent = 17;
+	string geo_cpp_backend_url = 18;
+	optional RecentlyRejectedEditThresholds recently_rejected_edit_thresholds = 19;
+}
+message CppEditHistoryStatusRequest { // aiserver.v1.CppEditHistoryStatusRequest
+}
+message CppEditHistoryStatusResponse { // aiserver.v1.CppEditHistoryStatusResponse
+	bool on = 1;
+	bool only_if_explicit = 2;
+}
+message CppAppendRequest { // aiserver.v1.CppAppendRequest
+	bytes changes = 1;
+}
+message CppAppendResponse { // aiserver.v1.CppAppendResponse
+	bool success = 1;
+}
+message CheckNumberConfigRequest { // aiserver.v1.CheckNumberConfigRequest
+	string key = 1;
+}
+message CheckNumberConfigResponse { // aiserver.v1.CheckNumberConfigResponse
+	int32 value = 1;
+}
+message StreamTerminalAutocompleteRequest { // aiserver.v1.StreamTerminalAutocompleteRequest
+	string current_command = 1;
+	repeated string command_history = 2;
+	optional string model_name = 3;
+	repeated CppFileDiffHistory file_diff_histories = 4;
+	optional string git_diff = 5;
+	repeated string commit_history = 6;
+	repeated string past_results = 7;
+}
+message StreamTerminalAutocompleteResponse { // aiserver.v1.StreamTerminalAutocompleteResponse
+	string text = 1;
+	optional bool done_stream = 2;
+}
+message StreamPseudocodeGeneratorRequest { // aiserver.v1.StreamPseudocodeGeneratorRequest
+	CurrentFileInfo current_file = 1;
+	PseudocodeTarget target = 2;
+}
+message PseudocodeTarget { // aiserver.v1.PseudocodeTarget
+	SimpleRange range = 1;
+	string content = 2;
+}
+message StreamPseudocodeGeneratorResponse { // aiserver.v1.StreamPseudocodeGeneratorResponse
+	string text = 1;
+}
+message StreamPseudocodeMapperRequest { // aiserver.v1.StreamPseudocodeMapperRequest
+	PseudocodeTarget target = 2;
+	string pseudocode = 1;
+}
+message StreamPseudocodeMapperResponse { // aiserver.v1.StreamPseudocodeMapperResponse
+	string text = 1;
+}
+message StreamAiLintBugRequest { // aiserver.v1.StreamAiLintBugRequest
+		message CodeChunk { // aiserver.v1.StreamAiLintBugRequest.CodeChunk
+			string relative_workspace_path = 1;
+			int32 start_line_number = 2;
+			repeated string lines = 3;
+			repeated string context_lines_before = 4;
+			repeated string context_lines_after = 5;
+		}
+		message CodeChunkList { // aiserver.v1.StreamAiLintBugRequest.CodeChunkList
+				message CodeChunk { // aiserver.v1.StreamAiLintBugRequest.CodeChunk
+					string relative_workspace_path = 1;
+					int32 start_line_number = 2;
+					repeated string lines = 3;
+					repeated string context_lines_before = 4;
+					repeated string context_lines_after = 5;
+				}
+			repeated CodeChunk chunks = 13;
+			repeated int32 referred_start_lines = 14;
+			repeated int32 referred_end_lines = 15;
+		}
+		message DiscriminatorOptions { // aiserver.v1.StreamAiLintBugRequest.DiscriminatorOptions
+			bool specific_rules = 1;
+			bool compile_errors = 2;
+			bool change_behavior = 3;
+			bool match_code = 4;
+			bool relevance = 5;
+			bool user_awareness = 6;
+		}
+	repeated CodeChunk chunks_to_analyze = 1;
+	ExplicitContext explicit_context = 4;
+	optional string workspace_root_path = 5;
+	ModelDetails model_details = 9;
+	repeated AiLintBug dismissed_bugs = 10;
+	repeated AiLintBug active_bugs = 11;
+	repeated AiLintRule lint_rules = 12;
+	repeated CodeChunkList clients = 14;
+	repeated LintDiscriminator force_enable_discriminators = 17;
+	repeated LintDiscriminator force_disable_discriminators = 18;
+	repeated LintGenerator force_enable_generators = 19;
+	repeated LintGenerator force_disable_generators = 20;
+	int32 version = 21;
+	optional DiscriminatorOptions discriminator_options = 15;
+	bool debug_mode = 16;
+}
+message AiLintBug { // aiserver.v1.AiLintBug
+	string relative_workspace_path = 1;
+	string uuid = 8;
+	string message = 2;
+	SimpleRange replace_range = 3;
+	string replace_text = 4;
+	string replace_initial_text = 5;
+	SimpleRange reevaluate_range = 6;
+	string reevaluate_initial_text = 7;
+	LintGenerator generator = 9;
+	repeated LintDiscriminatorResult discriminator_results = 10;
+	LogprobsLintPayload logprobs_payload = 11;
+}
+message LintDiscriminatorResult { // aiserver.v1.LintDiscriminatorResult
+	LintDiscriminator discriminator = 1;
+	bool allow = 2;
+	string reasoning = 3;
+}
+message LogprobsLintPayload { // aiserver.v1.LogprobsLintPayload
+	string chunk = 1;
+	string problematic_line = 2;
+	int32 start_col = 3;
+	int32 end_col = 4;
+	string most_likely_replace = 5;
+	int32 line_chunk_index_zero_based = 6;
+}
+message AiLintRule { // aiserver.v1.AiLintRule
+	string text = 1;
+}
+message StreamAiLintBugResponse { // aiserver.v1.StreamAiLintBugResponse
+	AiLintBug bug = 1;
+	string background_task_uuid = 2;
+}
+message StreamAiCursorHelpRequest { // aiserver.v1.StreamAiCursorHelpRequest
+	repeated CursorHelpConversationMessage messages = 1;
+	string user_os = 2;
+	ModelDetails model_details = 3;
+}
+message CursorHelpConversationMessage { // aiserver.v1.CursorHelpConversationMessage
+	string id = 1;
+	string role = 2;
+	string content = 3;
+}
+message StreamAiCursorHelpResponse { // aiserver.v1.StreamAiCursorHelpResponse
+	string text = 1;
+	repeated string actions = 2;
+}
+message LogUserLintReplyRequest { // aiserver.v1.LogUserLintReplyRequest
+	string uuid = 1;
+	string user_action = 2;
+	bool debug_mode = 3;
+}
+message LogUserLintReplyResponse { // aiserver.v1.LogUserLintReplyResponse
+}
+message LogLinterExplicitUserFeedbackRequest { // aiserver.v1.LogLinterExplicitUserFeedbackRequest
+		enum LinterUserFeedback { // aiserver.v1.LogLinterExplicitUserFeedbackRequest.LinterUserFeedback
+			LINTER_USER_FEEDBACK_UNSPECIFIED = 0;
+			LINTER_USER_FEEDBACK_CORRECT = 1;
+			LINTER_USER_FEEDBACK_INCORRECT = 2;
+			LINTER_USER_FEEDBACK_OTHER = 3;
+		}
+	AiLintBug bug = 1;
+	LinterUserFeedback user_feedback = 3;
+	string user_feedback_details = 4;
+}
+message LogLinterExplicitUserFeedbackResponse { // aiserver.v1.LogLinterExplicitUserFeedbackResponse
+}
+message FixMarkersRequest { // aiserver.v1.FixMarkersRequest
+		message Marker { // aiserver.v1.FixMarkersRequest.Marker
+				message RelatedInformation { // aiserver.v1.FixMarkersRequest.Marker.RelatedInformation
+					string message = 1;
+					string relative_workspace_path = 2;
+					repeated string relevant_lines = 3;
+					int32 start_line = 4;
+				}
+				message ContextRange { // aiserver.v1.FixMarkersRequest.Marker.ContextRange
+					int32 start_line = 1;
+					int32 end_line_inclusive = 2;
+				}
+				message AncestorTypeDefinition { // aiserver.v1.FixMarkersRequest.Marker.AncestorTypeDefinition
+					string name = 1;
+					string relative_workspace_path = 2;
+					int32 start_line = 3;
+					repeated string lines = 4;
+				}
+				message InsertedSymbolType { // aiserver.v1.FixMarkersRequest.Marker.InsertedSymbolType
+					string symbol_name = 1;
+					string symbol_type = 2;
+					string relative_workspace_path = 3;
+					int32 symbol_line = 4;
+				}
+				message QuickFix { // aiserver.v1.FixMarkersRequest.Marker.QuickFix
+						message Edit { // aiserver.v1.FixMarkersRequest.Marker.QuickFix.Edit
+							string relative_workspace_path = 1;
+							int32 start_line = 2;
+							int32 end_line_inclusive = 3;
+							repeated string deleted_lines = 4;
+							repeated string add_lines = 5;
+							int32 snapshot = 6;
+						}
+					string message = 1;
+					string kind = 2;
+					bool is_preferred = 3;
+					repeated Edit edits = 4;
+				}
+				message ClassInformation { // aiserver.v1.FixMarkersRequest.Marker.ClassInformation
+						message Constructor { // aiserver.v1.FixMarkersRequest.Marker.ClassInformation.Constructor
+							int32 start_line = 1;
+							int32 end_line_inclusive = 2;
+						}
+					string class_name = 1;
+					int32 start_line = 2;
+					repeated int32 top_level_lines = 3;
+					repeated string lines = 4;
+					repeated Constructor constructors = 5;
+					string detail = 6;
+				}
+				message FunctionSignature { // aiserver.v1.FixMarkersRequest.Marker.FunctionSignature
+						message FunctionParameter { // aiserver.v1.FixMarkersRequest.Marker.FunctionSignature.FunctionParameter
+							string label = 1;
+							string documentation = 2;
+						}
+					string label = 1;
+					string documentation = 2;
+					repeated FunctionParameter parameters = 3;
+				}
+			repeated string lines = 1;
+			int32 start_line = 2;
+			int32 end_line_inclusive = 3;
+			string message = 4;
+			string relative_workspace_path = 5;
+			repeated RelatedInformation related_information = 6;
+			repeated ContextRange context_ranges = 7;
+			repeated AncestorTypeDefinition ancestor_type_definitions = 8;
+			repeated InsertedSymbolType inserted_symbol_types = 9;
+			repeated QuickFix quick_fixes = 10;
+			int32 start_column = 11;
+			int32 end_column_inclusive = 12;
+			repeated ClassInformation class_information = 13;
+			repeated FunctionSignature function_signatures = 14;
+			int32 snapshot = 15;
+		}
+	repeated Marker markers = 1;
+	ModelDetails model_details = 2;
+	int32 iteration_number = 3;
+	string sequence_id = 4;
+	string user_instruction = 5;
+}
+message FixMarkersResponse { // aiserver.v1.FixMarkersResponse
+		message Change { // aiserver.v1.FixMarkersResponse.Change
+			int32 start_line = 1;
+			int32 end_line_exclusive = 2;
+			repeated string deleted_lines = 3;
+			repeated string add_lines = 4;
+		}
+	string relative_workspace_path = 1;
+	repeated Change changes = 2;
+	bool success = 3;
+	int32 iteration_number = 4;
+}
+message ReportInlineActionRequest { // aiserver.v1.ReportInlineActionRequest
+	string action = 1;
+	string generation_uuid = 2;
+}
+message ReportInlineActionResponse { // aiserver.v1.ReportInlineActionResponse
+}
+message StreamPriomptPromptRequest { // aiserver.v1.StreamPriomptPromptRequest
+	string prompt_props = 2;
+	string prompt_props_type_name = 3;
+	bool skip_login_check = 5;
+	ModelDetails model_details = 4;
+}
+message StreamPriomptPromptResponse { // aiserver.v1.StreamPriomptPromptResponse
+	string text = 1;
+}
+message StreamLintRequest { // aiserver.v1.StreamLintRequest
+	CurrentFileInfo current_file = 1;
+	repeated ConversationMessage conversation = 2;
+	repeated RepositoryInfo repositories = 3;
+	ExplicitContext explicit_context = 4;
+	optional string workspace_root_path = 5;
+	string query = 6;
+	repeated CodeBlock code_blocks = 7;
+	ModelDetails model_details = 9;
+	repeated string documentation_identifiers = 10;
+	repeated string bad_notifications = 11;
+	string lint_rules = 12;
+}
+message StreamNewRuleRequest { // aiserver.v1.StreamNewRuleRequest
+	string current_rules = 1;
+	string dismissed_bug = 2;
+}
+message AiProjectRequest { // aiserver.v1.AiProjectRequest
+	string description = 1;
+	ModelDetails model_details = 2;
+}
+message AiProjectResponse { // aiserver.v1.AiProjectResponse
+	string text = 1;
+}
+message ToCamelCaseRequest { // aiserver.v1.ToCamelCaseRequest
+	string text = 1;
+}
+message ToCamelCaseResponse { // aiserver.v1.ToCamelCaseResponse
+	string text = 1;
+}
+message ReportGenerationFeedbackRequest { // aiserver.v1.ReportGenerationFeedbackRequest
+		enum FeedbackType { // aiserver.v1.ReportGenerationFeedbackRequest.FeedbackType
+			FEEDBACK_TYPE_UNSPECIFIED = 0;
+			FEEDBACK_TYPE_THUMBS_UP = 1;
+			FEEDBACK_TYPE_THUMBS_DOWN = 2;
+			FEEDBACK_TYPE_NEUTRAL = 3;
+		}
+	FeedbackType feedback_type = 1;
+	string request_id = 2;
+	optional string comment = 3;
+}
+message ReportGenerationFeedbackResponse { // aiserver.v1.ReportGenerationFeedbackResponse
+}
+message GetThoughtAnnotationRequest { // aiserver.v1.GetThoughtAnnotationRequest
+	string request_id = 1;
+}
+message GetThoughtAnnotationResponse { // aiserver.v1.GetThoughtAnnotationResponse
+	AiThoughtAnnotation thought_annotation = 1;
+}
+message AiThoughtAnnotation { // aiserver.v1.AiThoughtAnnotation
+	string request_id = 1;
+	string auth_id = 2;
+	CmdKDebugInfo debug_info = 3;
+	string thought = 4;
+}
+message StreamWebCmdKV1Request { // aiserver.v1.StreamWebCmdKV1Request
+	string relative_workspace_path = 1;
+	string file_contents = 2;
+	string prompt = 3;
+	LineRange selection_range = 4;
+	ModelDetails model_details = 5;
+	repeated ImageProto images = 10;
+}
+message StreamWebCmdKV1Response { // aiserver.v1.StreamWebCmdKV1Response
+	StreamCmdKResponse cmd_k_response = 1;
+}
+message StreamNextCursorPredictionRequest { // aiserver.v1.StreamNextCursorPredictionRequest
+		message FileVisibleRange { // aiserver.v1.StreamNextCursorPredictionRequest.FileVisibleRange
+				message VisibleRange { // aiserver.v1.StreamNextCursorPredictionRequest.VisibleRange
+					int32 start_line_number_inclusive = 1;
+					int32 end_line_number_exclusive = 2;
+				}
+			string filename = 1;
+			repeated VisibleRange visible_ranges = 2;
+		}
+	CurrentFileInfo current_file = 1;
+	repeated string diff_history = 2;
+	optional string model_name = 3;
+	optional LinterErrors linter_errors = 4;
+	repeated CppContextItem context_items = 13;
+	repeated string diff_history_keys = 5;
+	optional bool give_debug_output = 6;
+	repeated CppFileDiffHistory file_diff_histories = 7;
+	repeated CppFileDiffHistory merged_diff_histories = 8;
+	repeated BlockDiffPatch block_diff_patches = 9;
+	optional bool is_nightly = 10;
+	optional bool is_debug = 11;
+	optional bool immediately_ack = 12;
+	optional bool enable_more_context = 17;
+	repeated CppParameterHint parameter_hints = 14;
+	repeated LspSubgraphFullContext lsp_contexts = 15;
+	optional CppIntentInfo cpp_intent_info = 16;
+	optional string workspace_id = 18;
+	repeated FilesyncUpdateWithModelVersion file_sync_updates = 19;
+	repeated FileVisibleRange file_visible_ranges = 20;
+}
+message StreamNextCursorPredictionResponse { // aiserver.v1.StreamNextCursorPredictionResponse
+	string text = 1;
+	int32 line_number = 2;
+	bool is_not_in_range = 3;
+	string file_name = 4;
+}
+message IsCursorPredictionEnabledRequest { // aiserver.v1.IsCursorPredictionEnabledRequest
+}
+message IsCursorPredictionEnabledResponse { // aiserver.v1.IsCursorPredictionEnabledResponse
+	bool enabled = 1;
+}
+message GetCppEditClassificationRequest { // aiserver.v1.GetCppEditClassificationRequest
+	StreamCppRequest cpp_request = 1;
+	repeated SuggestedEdit suggested_edits = 25;
+	bool marker_touches_green = 26;
+	string current_file_contents_for_linter_errors = 27;
+}
+message SuggestedEdit { // aiserver.v1.SuggestedEdit
+	SimpleRange edit_range = 1;
+	string text = 2;
+}
+message GetCppEditClassificationResponse { // aiserver.v1.GetCppEditClassificationResponse
+		message ScoredEdit { // aiserver.v1.GetCppEditClassificationResponse.ScoredEdit
+				message LogProbs { // aiserver.v1.GetCppEditClassificationResponse.LogProbs
+					repeated string tokens = 1;
+					repeated double token_logprobs = 2;
+				}
+			SuggestedEdit edit = 1;
+			LogProbs log_probs = 2;
+		}
+	repeated ScoredEdit scored_edits = 1;
+	ScoredEdit noop_edit = 2;
+	optional bool should_noop = 3;
+	ScoredEdit generation_edit = 4;
+}
+message GetTerminalCompletionRequest { // aiserver.v1.GetTerminalCompletionRequest
+	string current_command = 1;
+	repeated string command_history = 2;
+	optional string model_name = 3;
+	repeated CppFileDiffHistory file_diff_histories = 4;
+	optional string git_diff = 5;
+	repeated string commit_history = 6;
+	repeated string past_results = 7;
+	ModelDetails model_details = 8;
+	string user_platform = 9;
+	string current_folder = 10;
+	repeated CurrentFolderFileOrFolder current_folder_structure = 11;
+	repeated File relevant_files = 12;
+}
+message CurrentFolderFileOrFolder { // aiserver.v1.CurrentFolderFileOrFolder
+	string name = 1;
+	bool is_folder = 2;
+}
+message GetTerminalCompletionResponse { // aiserver.v1.GetTerminalCompletionResponse
+	string command = 1;
+}
+message TakeNotesOnCommitDiffRequest { // aiserver.v1.TakeNotesOnCommitDiffRequest
+	CommitDiffString diff = 1;
+	string commit_hash = 2;
+}
+message CommitDiffString { // aiserver.v1.CommitDiffString
+	string diff = 1;
+}
+message TakeNotesOnCommitDiffResponse { // aiserver.v1.TakeNotesOnCommitDiffResponse
+	repeated CommitNoteWithEmbeddings notes = 1;
+}
+message CommitNoteWithEmbeddings { // aiserver.v1.CommitNoteWithEmbeddings
+	string note = 1;
+	string commit_hash = 2;
+	repeated double embeddings = 3;
+}
+message BulkEmbedRequest { // aiserver.v1.BulkEmbedRequest
+	repeated string texts = 1;
+}
+message BulkEmbedResponse { // aiserver.v1.BulkEmbedResponse
+	repeated EmbeddingResponse embeddings = 1;
+}
+message EmbeddingResponse { // aiserver.v1.EmbeddingResponse
+	repeated double embedding = 1;
+}
+message ContinueChatRequestWithCommitsRequest { // aiserver.v1.ContinueChatRequestWithCommitsRequest
+	string session_id = 1;
+	repeated SimpleCommitWithDiff commits = 2;
+	string request_id = 3;
+}
+message SimpleCommitWithDiff { // aiserver.v1.SimpleCommitWithDiff
+	string commit_hash = 1;
+	string diff = 2;
+}
+message EmptyResponse { // aiserver.v1.EmptyResponse
+}
+message BackgroundCmdKEvalRequest { // aiserver.v1.BackgroundCmdKEvalRequest
+		enum Experiment { // aiserver.v1.BackgroundCmdKEvalRequest.Experiment
+			EXPERIMENT_UNSPECIFIED = 0;
+			EXPERIMENT_REFLECT = 1;
+			EXPERIMENT_CMD_K_ORIGINAL_RADIUS = 2;
+			EXPERIMENT_LOOP_ON_LINTS = 3;
+			EXPERIMENT_CHAT_AND_APPLY = 4;
+			EXPERIMENT_COMMIT_NOTES = 5;
+			EXPERIMENT_COALESCE_GENERATIONS = 6;
+			EXPERIMENT_REWORD_INSTRUCTIONS = 7;
+			EXPERIMENT_CODEBASE_CHUNKS = 8;
+			EXPERIMENT_SPEC_AND_APPLY = 9;
+			EXPERIMENT_ASK_CODEBASE = 10;
+		}
+		message ProposedChange { // aiserver.v1.BackgroundCmdKEvalRequest.ProposedChange
+				message Lint { // aiserver.v1.BackgroundCmdKEvalRequest.Lint
+						message QuickFix { // aiserver.v1.BackgroundCmdKEvalRequest.Lint.QuickFix
+								message Edit { // aiserver.v1.BackgroundCmdKEvalRequest.Lint.QuickFix.Edit
+									string relative_workspace_path = 1;
+									string text = 2;
+									int32 start_line_number_one_indexed = 3;
+									int32 start_column_one_indexed = 4;
+									int32 end_line_number_inclusive_one_indexed = 5;
+									int32 end_column_one_indexed = 6;
+								}
+							string message = 1;
+							string kind = 2;
+							bool is_preferred = 3;
+							repeated Edit edits = 4;
+						}
+					string message = 1;
+					string severity = 2;
+					string relative_workspace_path = 3;
+					int32 start_line_number_one_indexed = 4;
+					int32 start_column_one_indexed = 5;
+					int32 end_line_number_inclusive_one_indexed = 6;
+					int32 end_column_one_indexed = 7;
+					repeated QuickFix quick_fixes = 9;
+				}
+			string change = 1;
+			repeated Lint linter_errors = 2;
+		}
+	string instruction = 1;
+	CurrentFileInfo current_file = 2;
+	SimpleRange selection_range = 3;
+	string ground_truth = 4;
+	Experiment experiment = 5;
+	bool run_automated_eval = 6;
+	repeated ProposedChange proposed_change_history = 7;
+	repeated CommitNote commit_notes = 8;
+	repeated CodeBlock related_code_blocks = 9;
+}
+message BackgroundCmdKEvalResponse { // aiserver.v1.BackgroundCmdKEvalResponse
+	string proposed_change = 1;
+}
+message BackgroundCmdKRequest { // aiserver.v1.BackgroundCmdKRequest
+		enum Type { // aiserver.v1.BackgroundCmdKRequest.Type
+			TYPE_UNSPECIFIED = 0;
+			TYPE_REFLECT = 1;
+			TYPE_LOOP_ON_LINTS = 2;
+			TYPE_CHAT_AND_APPLY = 3;
+			TYPE_COALESCE_GENERATIONS = 4;
+			TYPE_CODEBASE_CHUNKS = 5;
+			TYPE_SPEC_AND_APPLY = 6;
+			TYPE_ASK_CODEBASE = 7;
+			TYPE_FINETUNED_INSTRUCTIONS = 8;
+			TYPE_USEFUL_TYPES = 9;
+			TYPE_CHAT_AND_APPLY_UNDERSPECIFIED = 10;
+		}
+		message ProposedChange { // aiserver.v1.BackgroundCmdKRequest.ProposedChange
+				message Lint { // aiserver.v1.BackgroundCmdKRequest.Lint
+						message QuickFix { // aiserver.v1.BackgroundCmdKRequest.Lint.QuickFix
+								message Edit { // aiserver.v1.BackgroundCmdKRequest.Lint.QuickFix.Edit
+									string relative_workspace_path = 1;
+									string text = 2;
+									int32 start_line_number_one_indexed = 3;
+									int32 start_column_one_indexed = 4;
+									int32 end_line_number_inclusive_one_indexed = 5;
+									int32 end_column_one_indexed = 6;
+								}
+							string message = 1;
+							string kind = 2;
+							bool is_preferred = 3;
+							repeated Edit edits = 4;
+						}
+					string message = 1;
+					string severity = 2;
+					string relative_workspace_path = 3;
+					int32 start_line_number_one_indexed = 4;
+					int32 start_column_one_indexed = 5;
+					int32 end_line_number_inclusive_one_indexed = 6;
+					int32 end_column_one_indexed = 7;
+					repeated QuickFix quick_fixes = 9;
+				}
+			string change = 1;
+			repeated Lint linter_errors = 2;
+		}
+		message Lint { // aiserver.v1.BackgroundCmdKRequest.Lint
+				message QuickFix { // aiserver.v1.BackgroundCmdKRequest.Lint.QuickFix
+						message Edit { // aiserver.v1.BackgroundCmdKRequest.Lint.QuickFix.Edit
+							string relative_workspace_path = 1;
+							string text = 2;
+							int32 start_line_number_one_indexed = 3;
+							int32 start_column_one_indexed = 4;
+							int32 end_line_number_inclusive_one_indexed = 5;
+							int32 end_column_one_indexed = 6;
+						}
+					string message = 1;
+					string kind = 2;
+					bool is_preferred = 3;
+					repeated Edit edits = 4;
+				}
+			string message = 1;
+			string severity = 2;
+			string relative_workspace_path = 3;
+			int32 start_line_number_one_indexed = 4;
+			int32 start_column_one_indexed = 5;
+			int32 end_line_number_inclusive_one_indexed = 6;
+			int32 end_column_one_indexed = 7;
+			repeated QuickFix quick_fixes = 9;
+		}
+		message UsefulType { // aiserver.v1.BackgroundCmdKRequest.UsefulType
+			string relative_workspace_path = 1;
+			int32 start_line = 2;
+			string text = 3;
+			optional double score = 4;
+		}
+		message RecentlyViewedFile { // aiserver.v1.BackgroundCmdKRequest.RecentlyViewedFile
+				message VisibleRange { // aiserver.v1.BackgroundCmdKRequest.RecentlyViewedFile.VisibleRange
+					int32 start_line_number_inclusive = 1;
+					int32 end_line_number_exclusive = 2;
+					optional int32 viewed_at = 3;
+					optional int32 global_order_descending = 4;
+				}
+			string relative_workspace_path = 1;
+			string contents = 2;
+			repeated VisibleRange visible_ranges = 3;
+		}
+		message Diff { // aiserver.v1.BackgroundCmdKRequest.Diff
+			string relative_workspace_path = 1;
+			string diff = 2;
+		}
+	string instruction = 1;
+	CurrentFileInfo current_file = 2;
+	SimpleRange selection_range = 3;
+	Type type = 4;
+	repeated ProposedChange proposed_change_history = 5;
+	repeated CodeBlock related_code_blocks = 6;
+	repeated CppFileDiffHistory diff_history = 7;
+	repeated Lint linter_errors = 8;
+	repeated UsefulType useful_types = 9;
+	repeated RecentlyViewedFile recently_viewed_files = 10;
+	repeated Diff recent_diffs = 11;
+	optional bool multiple_completions = 12;
+}
+message BackgroundCmdKResponse { // aiserver.v1.BackgroundCmdKResponse
+	string proposed_change = 1;
+}
+message StreamCursorMotionRequest { // aiserver.v1.StreamCursorMotionRequest
+	CurrentFileInfo current_file_info = 1;
+	SimpleRange selection_range = 2;
+	string instruction = 3;
+	ModelDetails model_details = 4;
+}
+message StreamCursorMotionResponse { // aiserver.v1.StreamCursorMotionResponse
+	string text = 1;
+}
+message CalculateAutoSelectionRequest { // aiserver.v1.CalculateAutoSelectionRequest
+	CurrentFileInfo current_file_info = 1;
+	CursorPosition cursor_position = 2;
+	SimpleRange selection_range = 3;
+	ModelDetails model_details = 4;
+	repeated HeuristicsSelection heuristics_selections = 5;
+}
+message HeuristicsSelection { // aiserver.v1.HeuristicsSelection
+		enum HeuristicsSelectionType { // aiserver.v1.HeuristicsSelection.HeuristicsSelectionType
+			HEURISTICS_SELECTION_TYPE_UNSPECIFIED = 0;
+			HEURISTICS_SELECTION_TYPE_GROUP = 1;
+			HEURISTICS_SELECTION_TYPE_LINE = 2;
+			HEURISTICS_SELECTION_TYPE_FOLDING = 3;
+		}
+	HeuristicsSelectionType type = 1;
+	int32 start_line = 2;
+	int32 end_line = 3;
+}
+message CalculateAutoSelectionResponse { // aiserver.v1.CalculateAutoSelectionResponse
+	repeated AutoSelectionResult results = 1;
+}
+message AutoSelectionResult { // aiserver.v1.AutoSelectionResult
+	int32 start_line = 1;
+	int32 end_line = 2;
+	repeated AutoSelectionInstructions instructions = 3;
+}
+message AutoSelectionInstructions { // aiserver.v1.AutoSelectionInstructions
+	string text = 1;
+	int32 start_line = 2;
+	int32 end_line = 3;
+}
+message GetAtSymbolSuggestionsRequest { // aiserver.v1.GetAtSymbolSuggestionsRequest
+	CurrentFileInfo current_file_info = 1;
+	repeated AtSymbolDependencyInformation at_symbol_dependencies = 2;
+	repeated AtSymbolOption at_symbol_options = 3;
+	string user_query = 4;
+	ModelDetails model_details = 5;
+}
+message AtSymbolDependencyInformation { // aiserver.v1.AtSymbolDependencyInformation
+	string name = 1;
+	string from_file = 2;
+}
+message AtSymbolOption { // aiserver.v1.AtSymbolOption
+	int32 index = 1;
+	string text = 2;
+	string type = 3;
+}
+message GetAtSymbolSuggestionsResponse { // aiserver.v1.GetAtSymbolSuggestionsResponse
+	repeated int32 indices = 1;
+	string explanation = 2;
+}
+message GetCodebaseQuestionsResponse { // aiserver.v1.GetCodebaseQuestionsResponse
+	repeated string questions = 1;
+}
+message GetRankedContextFromContextBankRequest { // aiserver.v1.GetRankedContextFromContextBankRequest
+	GetComposerChatRequest composer_request = 1;
+	repeated ContextToRank context_to_rank = 2;
+}
+message GetRankedContextFromContextBankResponse { // aiserver.v1.GetRankedContextFromContextBankResponse
+	repeated RankedContext ranked_context = 1;
+}
+message EditHistoryAppendChangesRequest { // aiserver.v1.EditHistoryAppendChangesRequest
+		enum PrivacyModeStatus { // aiserver.v1.EditHistoryAppendChangesRequest.PrivacyModeStatus
+			PRIVACY_MODE_STATUS_UNSPECIFIED = 0;
+			PRIVACY_MODE_STATUS_PRIVACY_ENABLED = 1;
+			PRIVACY_MODE_STATUS_IMPLICIT_NO_PRIVACY = 2;
+			PRIVACY_MODE_STATUS_EXPLICIT_NO_PRIVACY = 3;
+		}
+	string session_id = 1;
+	string model_uuid = 2;
+	optional string starting_model_value = 3;
+	optional int32 starting_model_version = 10;
+	string relative_path = 5;
+	string uri = 14;
+	string client_version = 6;
+	optional string client_commit = 8;
+	repeated ModelChange changes = 4;
+	repeated CppSessionEvent session_events = 9;
+	bool model_changes_may_be_out_of_order = 11;
+	PrivacyModeStatus privacy_mode_status = 12;
+	repeated CppHistoryAppendEvent events = 7;
+	float time_origin = 13;
+}
+message ModelChange { // aiserver.v1.ModelChange
+	string text = 1;
+	IRange range = 2;
+	optional string final_model_hash = 3;
+	optional int32 model_version_immediately_after_this_change = 4;
+	optional double performance_now_timestamp = 5;
+	optional bool is_undoing = 7;
+	optional bool is_redoing = 8;
+	bool model_is_attached_to_editor = 9;
+	bool model_is_attached_to_the_active_editor = 10;
+	repeated CursorSelection cursor_selections = 11;
+	int32 model_version_at_metadata_retrieval_time = 12;
+}
+message CursorSelection { // aiserver.v1.CursorSelection
+	int32 selection_start_line_number = 1;
+	int32 selection_start_column = 2;
+	int32 position_line_number = 3;
+	int32 position_column = 4;
+}
+message CppSessionEvent { // aiserver.v1.CppSessionEvent
+	CppAcceptEventNew accept_event = 2;
+	CppRejectEventNew reject_event = 3;
+	CppManualTriggerEventNew manual_trigger_event = 4;
+	CppStoppedTrackingModelEvent stopped_tracking_model_event = 6;
+	CppSuggestEvent suggest_event = 7;
+	CppLinterErrorEvent linter_error_event = 8;
+	CppDebouncedCursorMovementEvent debounced_cursor_movement_event = 9;
+	CppEditorChangedEvent editor_changed_event = 10;
+	CppCopyEvent copy_event = 11;
+	CppChangeQuickActionEvent quick_action_event = 13;
+	CppQuickActionFireEvent quick_action_fire_event = 14;
+	ModelOpenedEvent model_opened_event = 15;
+	CmdKEvent cmd_k_event = 17;
+	ChatEvent chat_event = 18;
+	AiRequestEvent ai_event = 19;
+	ScrollEvent scroll_event = 21;
+	EditorCloseEvent editor_close_event = 22;
+	TabCloseEvent tab_close_event = 23;
+	ModelAddedEvent model_added_event = 33;
+	CppPartialAcceptEvent partial_accept_event = 26;
+	AcceptCursorPredictionEvent accept_cursor_prediction_event = 27;
+	RejectCursorPredictionEvent reject_cursor_prediction_event = 28;
+	SuggestCursorPredictionEvent suggest_cursor_prediction_event = 29;
+	CppTriggerEvent cpp_trigger_event = 30;
+	FinishedCppGenerationEvent finished_cpp_generation_event = 31;
+	BugBotEvent bug_bot_event = 32;
+	BackgroundFilesEvent background_files_event = 16;
+	CppTerminalEvent terminal_event = 20;
+	CppGitContextEvent git_context_event = 24;
+	double performance_now_timestamp = 5;
+	optional double performance_time_origin = 25;
+}
+message CppAcceptEventNew { // aiserver.v1.CppAcceptEventNew
+	CurrentlyShownCppSuggestion cpp_suggestion = 1;
+	PointInTimeModel point_in_time_model = 7;
+}
+message CurrentlyShownCppSuggestion { // aiserver.v1.CurrentlyShownCppSuggestion
+	int32 suggestion_id = 1;
+	string suggestion_text = 2;
+	int32 model_version_when_the_change_is_first_indicated_to_the_user_but_not_shown_in_the_model = 3;
+	optional IRange range_of_suggestion_in_current_model = 4;
+	string original_text = 5;
+}
+message PointInTimeModel { // aiserver.v1.PointInTimeModel
+	string model_uuid = 1;
+	int32 model_version = 2;
+	string relative_path = 3;
+	string model_id = 4;
+}
+message CppRejectEventNew { // aiserver.v1.CppRejectEventNew
+	CurrentlyShownCppSuggestion cpp_suggestion = 1;
+	PointInTimeModel point_in_time_model = 7;
+}
+message CppManualTriggerEventNew { // aiserver.v1.CppManualTriggerEventNew
+	int32 line_number_one_indexed = 1;
+	int32 column_number_one_indexed = 2;
+	PointInTimeModel point_in_time_model = 7;
+}
+message CppStoppedTrackingModelEvent { // aiserver.v1.CppStoppedTrackingModelEvent
+		enum StoppedTrackingModelReason { // aiserver.v1.CppStoppedTrackingModelEvent.StoppedTrackingModelReason
+			STOPPED_TRACKING_MODEL_REASON_UNSPECIFIED = 0;
+			STOPPED_TRACKING_MODEL_REASON_FILE_TOO_BIG = 1;
+			STOPPED_TRACKING_MODEL_REASON_FILE_DISPOSED = 2;
+			STOPPED_TRACKING_MODEL_REASON_CHANGE_TOO_BIG = 3;
+		}
+	string model_uuid = 1;
+	string relative_path = 2;
+	StoppedTrackingModelReason reason = 3;
+}
+message CppSuggestEvent { // aiserver.v1.CppSuggestEvent
+	CurrentlyShownCppSuggestion cpp_suggestion = 1;
+	PointInTimeModel point_in_time_model = 2;
+	RecoverableCppData recoverable_cpp_data = 3;
+}
+message RecoverableCppData { // aiserver.v1.RecoverableCppData
+	string request_id = 1;
+	string suggestion_text = 2;
+	IRange suggestion_range = 3;
+	OneIndexedPosition position = 4;
+}
+message OneIndexedPosition { // aiserver.v1.OneIndexedPosition
+	int32 line_number_one_indexed = 1;
+	int32 column_one_indexed = 2;
+}
+message CppLinterErrorEvent { // aiserver.v1.CppLinterErrorEvent
+	PointInTimeModel point_in_time_model = 1;
+	repeated LinterError added_errors = 2;
+	repeated LinterError removed_errors = 3;
+	repeated LinterError errors = 4;
+}
+message CppDebouncedCursorMovementEvent { // aiserver.v1.CppDebouncedCursorMovementEvent
+	PointInTimeModel point_in_time_model = 1;
+	OneIndexedPosition cursor_position = 2;
+}
+message CppEditorChangedEvent { // aiserver.v1.CppEditorChangedEvent
+	PointInTimeModel point_in_time_model = 1;
+	OneIndexedPosition cursor_position = 2;
+	repeated IRange visible_ranges = 3;
+	string editor_id = 4;
+}
+message CppCopyEvent { // aiserver.v1.CppCopyEvent
+	string clipboard_contents = 1;
+}
+message CppChangeQuickActionEvent { // aiserver.v1.CppChangeQuickActionEvent
+	PointInTimeModel point_in_time_model = 1;
+	repeated CppQuickAction added = 2;
+	repeated CppQuickAction removed = 3;
+	repeated CppQuickAction actions = 4;
+}
+message CppQuickAction { // aiserver.v1.CppQuickAction
+		message Edit { // aiserver.v1.CppQuickAction.Edit
+			string text = 1;
+			IRange range = 2;
+		}
+	string title = 1;
+	repeated Edit edits = 2;
+	optional bool is_preferred = 3;
+	CppQuickActionCommand command = 4;
+}
+message CppQuickActionCommand { // aiserver.v1.CppQuickActionCommand
+	string title = 1;
+	string id = 2;
+	repeated string arguments = 3;
+}
+message CppQuickActionFireEvent { // aiserver.v1.CppQuickActionFireEvent
+	PointInTimeModel point_in_time_model = 1;
+	CppQuickActionCommand quick_action_command = 2;
+	CppQuickAction quick_action_event = 3;
+}
+message ModelOpenedEvent { // aiserver.v1.ModelOpenedEvent
+	PointInTimeModel point_in_time_model = 1;
+}
+message CmdKEvent { // aiserver.v1.CmdKEvent
+		message SubmitPrompt { // aiserver.v1.CmdKEvent.SubmitPrompt
+			IRange original_range = 1;
+			string original_text = 2;
+			string prompt = 3;
+		}
+		message EndOfGeneration { // aiserver.v1.CmdKEvent.EndOfGeneration
+		}
+		message InterruptGeneration { // aiserver.v1.CmdKEvent.InterruptGeneration
+		}
+		message AcceptDiffs { // aiserver.v1.CmdKEvent.AcceptDiffs
+		}
+		message RejectDiffs { // aiserver.v1.CmdKEvent.RejectDiffs
+		}
+		message RejectPartialDiff { // aiserver.v1.CmdKEvent.RejectPartialDiff
+			IRange green_range = 1;
+			repeated string green_lines = 2;
+			repeated string red_lines = 3;
+		}
+		message AcceptPartialDiff { // aiserver.v1.CmdKEvent.AcceptPartialDiff
+			IRange green_range = 1;
+			repeated string green_lines = 2;
+			repeated string red_lines = 3;
+		}
+	PointInTimeModel point_in_time_model = 1;
+	string request_id = 2;
+	optional string prompt_bar_id = 20;
+	SubmitPrompt submit_prompt = 3;
+	EndOfGeneration end_of_generation = 4;
+	InterruptGeneration interrupt_generation = 5;
+	AcceptDiffs accept_all = 6;
+	RejectDiffs reject_all = 7;
+	RejectPartialDiff reject_partial_diff = 8;
+	AcceptPartialDiff accept_partial_diff = 9;
+}
+message ChatEvent { // aiserver.v1.ChatEvent
+		message SubmitPrompt { // aiserver.v1.ChatEvent.SubmitPrompt
+			string prompt = 1;
+		}
+		message EndOfAnyGeneration { // aiserver.v1.ChatEvent.EndOfAnyGeneration
+		}
+		message EndOfUninterruptedGeneration { // aiserver.v1.ChatEvent.EndOfUninterruptedGeneration
+		}
+	string request_id = 1;
+	SubmitPrompt submit_prompt = 2;
+	EndOfAnyGeneration end_of_any_generation = 3;
+	EndOfUninterruptedGeneration end_of_uninterrupted_generation = 4;
+}
+message AiRequestEvent { // aiserver.v1.AiRequestEvent
+		enum RequestType { // aiserver.v1.AiRequestEvent.RequestType
+			REQUEST_TYPE_UNSPECIFIED = 0;
+			REQUEST_TYPE_START = 1;
+			REQUEST_TYPE_END = 2;
+		}
+	RequestType request_type = 1;
+	string request_id = 2;
+}
+message ScrollEvent { // aiserver.v1.ScrollEvent
+	PointInTimeModel point_in_time_model = 1;
+	repeated IRange visible_ranges = 2;
+	string editor_id = 3;
+}
+message EditorCloseEvent { // aiserver.v1.EditorCloseEvent
+	string editor_id = 1;
+}
+message TabCloseEvent { // aiserver.v1.TabCloseEvent
+	MaybeDefinedPointInTimeModel point_in_time_model = 1;
+}
+message MaybeDefinedPointInTimeModel { // aiserver.v1.MaybeDefinedPointInTimeModel
+	optional string model_uuid = 1;
+	int32 model_version = 2;
+	string relative_path = 3;
+	string model_id = 4;
+}
+message ModelAddedEvent { // aiserver.v1.ModelAddedEvent
+	MaybeDefinedPointInTimeModel point_in_time_model = 1;
+	string full_uri = 2;
+	string model_id = 3;
+	string uri_scheme = 4;
+	bool is_too_large_for_syncing = 5;
+	bool is_too_large_for_tokenization = 6;
+	bool is_too_large_for_heap_operation = 7;
+}
+message CppPartialAcceptEvent { // aiserver.v1.CppPartialAcceptEvent
+	CurrentlyShownCppSuggestion cpp_suggestion = 1;
+	Edit edit = 2;
+	PointInTimeModel point_in_time_model = 3;
+}
+message Edit { // aiserver.v1.Edit
+	string text = 1;
+	IRange range = 2;
+}
+message AcceptCursorPredictionEvent { // aiserver.v1.AcceptCursorPredictionEvent
+	CursorPrediction cursor_prediction = 1;
+	PointInTimeModel point_in_time_model = 2;
+}
+message CursorPrediction { // aiserver.v1.CursorPrediction
+		enum CursorPredictionSource { // aiserver.v1.CursorPrediction.CursorPredictionSource
+			CURSOR_PREDICTION_SOURCE_UNSPECIFIED = 0;
+			CURSOR_PREDICTION_SOURCE_ALWAYS_ON = 1;
+			CURSOR_PREDICTION_SOURCE_ACCEPT = 2;
+			CURSOR_PREDICTION_SOURCE_UNDO = 3;
+			CURSOR_PREDICTION_SOURCE_EDITOR_CHANGE = 4;
+		}
+	string request_id = 1;
+	int32 prediction_id = 2;
+	int32 line_number = 3;
+	CursorPredictionSource source = 4;
+}
+message RejectCursorPredictionEvent { // aiserver.v1.RejectCursorPredictionEvent
+	CursorPrediction cursor_prediction = 1;
+	PointInTimeModel point_in_time_model = 2;
+}
+message SuggestCursorPredictionEvent { // aiserver.v1.SuggestCursorPredictionEvent
+	CursorPrediction cursor_prediction = 1;
+	PointInTimeModel point_in_time_model = 2;
+}
+message CppTriggerEvent { // aiserver.v1.CppTriggerEvent
+	string generation_uuid = 1;
+	int32 model_version = 2;
+	OneIndexedPosition cursor_position = 3;
+	PointInTimeModel point_in_time_model = 4;
+	CppSource source = 5;
+}
+message FinishedCppGenerationEvent { // aiserver.v1.FinishedCppGenerationEvent
+	PointInTimeModel point_in_time_model = 1;
+	RecoverableCppData recoverable_cpp_data = 2;
+}
+message BugBotEvent { // aiserver.v1.BugBotEvent
+		message Started { // aiserver.v1.BugBotEvent.Started
+		}
+		message ReportsGenerated { // aiserver.v1.BugBotEvent.ReportsGenerated
+			BugReports bug_reports = 1;
+		}
+		message PressedFixInComposer { // aiserver.v1.BugBotEvent.PressedFixInComposer
+			string bug_report_id = 1;
+		}
+		message PressedOpenInEditor { // aiserver.v1.BugBotEvent.PressedOpenInEditor
+			BugLocation bug_location = 1;
+			string bug_report_id = 2;
+		}
+		message ViewedReport { // aiserver.v1.BugBotEvent.ViewedReport
+				message ReportView { // aiserver.v1.BugBotEvent.ViewedReport.ReportView
+					string bug_report_id = 1;
+					double view_percentage = 2;
+					double text_percentage = 3;
+				}
+			int32 seconds_viewed = 1;
+			repeated ReportView report_views = 2;
+		}
+		message UserFeedback { // aiserver.v1.BugBotEvent.UserFeedback
+			string bug_report_id = 1;
+			string feedback = 2;
+		}
+		message PressedAddToChat { // aiserver.v1.BugBotEvent.PressedAddToChat
+			string bug_report_id = 1;
+		}
+		message BackgroundIntervalStarted { // aiserver.v1.BugBotEvent.BackgroundIntervalStarted
+		}
+		message BackgroundIntervalEnded { // aiserver.v1.BugBotEvent.BackgroundIntervalEnded
+			bool success = 1;
+		}
+		message BackgroundIntervalInterrupted { // aiserver.v1.BugBotEvent.BackgroundIntervalInterrupted
+				enum BackgroundIntervalInterruptedReason { // aiserver.v1.BugBotEvent.BackgroundIntervalInterruptedReason
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_UNSPECIFIED = 0;
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_DISABLED = 1;
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_TOO_RECENT = 2;
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_UNVIEWED_BUG_REPORTS = 3;
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_NOT_IN_GIT_REPO = 4;
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_DEFAULT_BRANCH_IS_NOT_CURRENT_BRANCH = 5;
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_NO_GIT_USER = 6;
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_NO_LAST_COMMIT = 7;
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_LAST_COMMIT_NOT_MADE_BY_USER = 8;
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_LAST_COMMIT_TOO_OLD = 9;
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_DIFF_TOO_LONG = 10;
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_DIFF_TOO_SHORT = 11;
+					BACKGROUND_INTERVAL_INTERRUPTED_REASON_TELEMETRY_UNHEALTHY = 12;
+				}
+			BackgroundIntervalInterruptedReason reason = 1;
+		}
+		message BackgroundIntervalErrored { // aiserver.v1.BugBotEvent.BackgroundIntervalErrored
+			string error_message = 1;
+		}
+	string request_id = 1;
+	Started started = 2;
+	ReportsGenerated reports_generated = 3;
+	PressedFixInComposer pressed_fix_in_composer = 4;
+	PressedOpenInEditor pressed_open_in_editor = 5;
+	ViewedReport viewed_report = 6;
+	UserFeedback user_feedback = 7;
+	PressedAddToChat pressed_add_to_chat = 8;
+	BackgroundIntervalStarted background_interval_started = 9;
+	BackgroundIntervalEnded background_interval_ended = 10;
+	BackgroundIntervalInterrupted background_interval_interrupted = 11;
+	BackgroundIntervalErrored background_interval_errored = 12;
+}
+message BugReports { // aiserver.v1.BugReports
+	repeated BugReport bug_reports = 1;
+}
+message BugReport { // aiserver.v1.BugReport
+	repeated BugLocation locations = 1;
+	string id = 2;
+	string description = 3;
+	optional float confidence = 4;
+}
+message BugLocation { // aiserver.v1.BugLocation
+	string file = 1;
+	int32 start_line = 2;
+	int32 end_line = 3;
+}
+message BackgroundFilesEvent { // aiserver.v1.BackgroundFilesEvent
+		message BackgroundFile { // aiserver.v1.BackgroundFilesEvent.BackgroundFile
+			string relative_workspace_path = 1;
+			string contents = 2;
+			string hash = 3;
+			string full_path = 4;
+		}
+	repeated BackgroundFile files = 2;
+}
+message CppTerminalEvent { // aiserver.v1.CppTerminalEvent
+		message TerminalInput { // aiserver.v1.CppTerminalEvent.TerminalInput
+			repeated string buffered_keypresses = 1;
+		}
+		message CommandStarted { // aiserver.v1.CppTerminalEvent.CommandStarted
+			string command = 1;
+			double started_timestamp_unix_ms = 2;
+			bool command_was_trimmed = 3;
+		}
+		message CommandFinished { // aiserver.v1.CppTerminalEvent.CommandFinished
+			string command = 1;
+			optional int32 exit_code = 2;
+			string output = 3;
+			double finished_timestamp_unix_ms = 4;
+			bool command_was_trimmed = 5;
+			bool output_was_trimmed = 6;
+		}
+	int32 terminal_id = 1;
+	string terminal_path = 2;
+	optional string terminal_cwd = 6;
+	TerminalInput terminal_input = 3;
+	CommandStarted command_started = 4;
+	CommandFinished command_finished = 5;
+}
+message CppGitContextEvent { // aiserver.v1.CppGitContextEvent
+		message Head { // aiserver.v1.CppGitContextEvent.Head
+				message UpstreamRef { // aiserver.v1.CppGitContextEvent.Head.UpstreamRef
+					string remote = 1;
+					string name = 2;
+					optional string commit = 3;
+				}
+			string type = 1;
+			optional string name = 2;
+			optional string commit = 3;
+			optional string remote = 4;
+			optional UpstreamRef upstream_ref = 5;
+			optional int32 ahead = 6;
+			optional int32 behind = 7;
+		}
+		message Ref { // aiserver.v1.CppGitContextEvent.Ref
+			string type = 1;
+			optional string name = 2;
+			optional string commit = 3;
+			optional string remote = 4;
+		}
+		message Remote { // aiserver.v1.CppGitContextEvent.Remote
+			string name = 1;
+			optional string fetch_url = 2;
+			optional string push_url = 3;
+			bool is_read_only = 4;
+		}
+		message Submodule { // aiserver.v1.CppGitContextEvent.Submodule
+			string name = 1;
+			string path = 2;
+			string url = 3;
+		}
+		message Commit { // aiserver.v1.CppGitContextEvent.Commit
+				message CommitShortStat { // aiserver.v1.CppGitContextEvent.Commit.CommitShortStat
+					int32 files = 1;
+					int32 insertions = 2;
+					int32 deletions = 3;
+				}
+			string hash = 1;
+			string message = 2;
+			repeated string parents = 3;
+			optional string author_date = 4;
+			optional string author_name = 5;
+			optional string author_email = 6;
+			optional string commit_date = 7;
+			optional CommitShortStat short_stat = 8;
+		}
+		message Change { // aiserver.v1.CppGitContextEvent.Change
+			string uri = 1;
+			string original_uri = 2;
+			optional string rename_uri = 3;
+			string status = 4;
+		}
+	string relative_workspace_path = 1;
+	string root_fs_path = 2;
+	optional Head head = 3;
+	repeated Ref refs = 4;
+	repeated Remote remotes = 5;
+	repeated Submodule submodules = 6;
+	optional Commit rebase_commit = 7;
+	repeated Change merge_changes = 8;
+	repeated Change index_changes = 9;
+	repeated Change working_tree_changes = 10;
+}
+message CppHistoryAppendEvent { // aiserver.v1.CppHistoryAppendEvent
+	ModelChange model_change = 1;
+	CppAcceptEvent accept_event = 2;
+	CppRejectEvent reject_event = 3;
+	CppManualTriggerEvent manual_trigger_event = 4;
+	optional string final_model_hash = 10;
+}
+message CppAcceptEvent { // aiserver.v1.CppAcceptEvent
+	CppSuggestion cpp_suggestion = 1;
+}
+message CppSuggestion { // aiserver.v1.CppSuggestion
+	string suggestion_text = 1;
+	IRange range = 2;
+	bool seen = 5;
+	SelectionWithOrientation editor_selection_before_peek = 6;
+}
+message SelectionWithOrientation { // aiserver.v1.SelectionWithOrientation
+	int32 selection_start_line_number = 1;
+	int32 selection_start_column = 2;
+	int32 position_line_number = 3;
+	int32 position_column = 4;
+}
+message CppRejectEvent { // aiserver.v1.CppRejectEvent
+	CppSuggestion cpp_suggestion = 1;
+}
+message CppManualTriggerEvent { // aiserver.v1.CppManualTriggerEvent
+	CursorPosition position = 2;
+}
+message EditHistoryAppendChangesResponse { // aiserver.v1.EditHistoryAppendChangesResponse
+	bool success = 1;
+}
+message DevOnlyGetPastRequestIdsRequest { // aiserver.v1.DevOnlyGetPastRequestIdsRequest
+	optional int32 count = 1;
+	optional int32 page = 2;
+}
+message DevOnlyGetPastRequestIdsResponse { // aiserver.v1.DevOnlyGetPastRequestIdsResponse
+	repeated DevOnlyPastRequest past_requests = 1;
+	int32 total_count = 10;
+	bool has_more = 11;
+}
+message DevOnlyPastRequest { // aiserver.v1.DevOnlyPastRequest
+	string request_id = 1;
+	string date_time = 2;
+	string model_name = 3;
+	string feature_name = 4;
+	string s3_uri = 5;
+	string status = 6;
+	int32 num_prompt_tokens = 7;
+	int32 num_completion_tokens = 8;
+	string api_call_method = 9;
+}
+message GetFilesForComposerRequest { // aiserver.v1.GetFilesForComposerRequest
+	repeated ConversationMessage conversation = 1;
+	repeated CurrentFileInfo files = 2;
+	optional bool rerank_results = 3;
+	FullFileSearchResult file_search_results = 4;
+	CodeSearchResult code_search_results = 5;
+	optional bool rerank_results_v2 = 6;
+	optional bool long_context_mode = 7;
+	optional bool is_eval = 8;
+	optional string request_id = 9;
+	ModelDetails model_details = 10;
+}
+message GetFilesForComposerResponse { // aiserver.v1.GetFilesForComposerResponse
+	repeated string relative_workspace_paths = 1;
+}
+message TryParseTypeScriptTreeSitterRequest { // aiserver.v1.TryParseTypeScriptTreeSitterRequest
+	string workspace_relative_path = 1;
+	string text = 2;
+}
+message TryParseTypeScriptTreeSitterResponse { // aiserver.v1.TryParseTypeScriptTreeSitterResponse
+	string text = 1;
+}
+message NameTabRequest { // aiserver.v1.NameTabRequest
+	repeated ConversationMessage messages = 1;
+}
+message NameTabResponse { // aiserver.v1.NameTabResponse
+	string name = 1;
+	string reason = 2;
+}
+message IsTerminalFinishedRequest { // aiserver.v1.IsTerminalFinishedRequest
+	string terminal_content = 1;
+}
+message IsTerminalFinishedResponse { // aiserver.v1.IsTerminalFinishedResponse
+	bool is_finished = 1;
+	optional string reason = 2;
+}
+message TestModelStatusRequest { // aiserver.v1.TestModelStatusRequest
+	string model_name = 1;
+}
+message TestModelStatusResponse { // aiserver.v1.TestModelStatusResponse
+	string text = 1;
+	float latency = 2;
+	float ttft = 3;
+	float max_time_between_chunks = 4;
+	string server_timing = 5;
+}
+message FindBugsRequest { // aiserver.v1.FindBugsRequest
+	CurrentFileInfo current_file = 1;
+	ModelDetails model_details = 2;
+}
+message FindBugsResponse { // aiserver.v1.FindBugsResponse
+		message Bug { // aiserver.v1.FindBugsResponse.Bug
+			string description = 1;
+			int32 line_number = 2;
+			float confidence = 3;
+		}
+	optional Bug bug = 1;
+}
+message ContextRerankingRequest { // aiserver.v1.ContextRerankingRequest
+	optional CurrentFileInfo current_file = 1;
+	repeated ConversationMessage chat_conversation_history = 2;
+	repeated CppFileDiffHistory cpp_diff_trajectories = 3;
+	repeated ContextRerankingCandidateFile candidate_files = 4;
+}
+message ContextRerankingCandidateFile { // aiserver.v1.ContextRerankingCandidateFile
+	string file_name = 1;
+	string file_content = 2;
+}
+message ContextRerankingResponse { // aiserver.v1.ContextRerankingResponse
+	repeated float reranking_scores = 1;
+}
+message AutoContextRequest { // aiserver.v1.AutoContextRequest
+	string text = 1;
+	repeated AutoContextFile candidate_files = 2;
+	ModelDetails model_details = 3;
+}
+message AutoContextFile { // aiserver.v1.AutoContextFile
+	string relative_workspace_path = 1;
+	string file_content = 2;
+}
+message AutoContextResponse { // aiserver.v1.AutoContextResponse
+	repeated AutoContextRankedFile ranked_files = 1;
+}
+message AutoContextRankedFile { // aiserver.v1.AutoContextRankedFile
+	string relative_workspace_path = 1;
+	float reranking_score = 2;
+}
+message WriteGitCommitMessageRequest { // aiserver.v1.WriteGitCommitMessageRequest
+	repeated string diffs = 1;
+	repeated string previous_commit_messages = 2;
+}
+message WriteGitCommitMessageResponse { // aiserver.v1.WriteGitCommitMessageResponse
+	string commit_message = 1;
+}
+message StreamBugBotRequest { // aiserver.v1.StreamBugBotRequest
+	GitDiff git_diff = 1;
+	ModelDetails model_details = 2;
+	optional string user_instructions = 3;
+	optional string bug_detection_guidelines = 4;
+	optional int32 iterations = 5;
+	bool in_background_subsidized = 6;
+	optional string session_id = 7;
+	optional string price_id = 8;
+	bool has_telemetry = 9;
+}
+message StreamBugBotResponse { // aiserver.v1.StreamBugBotResponse
+	optional BugReports bug_reports = 1;
+	BugBotStatus status = 2;
+}
+message BugBotStatus { // aiserver.v1.BugBotStatus
+		enum Status { // aiserver.v1.BugBotStatus.Status
+			STATUS_UNSPECIFIED = 0;
+			STATUS_IN_PROGRESS = 1;
+			STATUS_IN_PROGRESS_ITERATIONS = 2;
+			STATUS_DONE = 3;
+		}
+	Status status = 1;
+	string message = 2;
+	optional int32 iterations_completed = 3;
+	optional int32 total_iterations = 4;
+	optional int32 total_tokens = 5;
+	optional int32 processed_tokens = 6;
+	optional float processed_cost = 7;
+	optional int32 thinking_tokens = 8;
+	optional float thinking_cost = 9;
+}
+message CheckBugBotPriceRequest { // aiserver.v1.CheckBugBotPriceRequest
+	int32 diff_char_len = 1;
+	int32 iterations = 2;
+	ModelDetails model_details = 3;
+}
+message CheckBugBotPriceResponse { // aiserver.v1.CheckBugBotPriceResponse
+	double cost = 1;
+	string price_id = 2;
+}
+message CheckBugBotTelemetryHealthyRequest { // aiserver.v1.CheckBugBotTelemetryHealthyRequest
+	string session_id = 1;
+}
+message CheckBugBotTelemetryHealthyResponse { // aiserver.v1.CheckBugBotTelemetryHealthyResponse
+	bool is_healthy = 1;
+}
+message GetSuggestedBugBotIterationsRequest { // aiserver.v1.GetSuggestedBugBotIterationsRequest
+	int32 diff_char_len = 1;
+	ModelDetails model_details = 2;
+}
+message GetSuggestedBugBotIterationsResponse { // aiserver.v1.GetSuggestedBugBotIterationsResponse
+	int32 iterations = 1;
+}
+message TestBidiRequest { // aiserver.v1.TestBidiRequest
+	string message = 1;
+}
+message TestBidiResponse { // aiserver.v1.TestBidiResponse
+	string message = 1;
+}
+message FastRepoInitHandshakeRequest { // aiserver.v1.FastRepoInitHandshakeRequest
+	RepositoryInfo repository = 1;
+	string root_hash = 2;
+	string potential_legacy_repo_name = 3;
+}
+message FastRepoInitHandshakeResponse { // aiserver.v1.FastRepoInitHandshakeResponse
+		enum Status { // aiserver.v1.FastRepoInitHandshakeResponse.Status
+			STATUS_UNSPECIFIED = 0;
+			STATUS_UP_TO_DATE = 1;
+			STATUS_OUT_OF_SYNC = 2;
+			STATUS_FAILURE = 3;
+			STATUS_EMPTY = 4;
+		}
+	Status status = 1;
+	string repo_name = 2;
+}
+message SyncMerkleSubtreeRequest { // aiserver.v1.SyncMerkleSubtreeRequest
+	RepositoryInfo repository = 1;
+	PartialPathItem local_partial_path = 2;
+}
+message PartialPathItem { // aiserver.v1.PartialPathItem
+	string relative_workspace_path = 1;
+	string hash_of_node = 2;
+}
+message SyncMerkleSubtreeResponse { // aiserver.v1.SyncMerkleSubtreeResponse
+		message Mismatch { // aiserver.v1.SyncMerkleSubtreeResponse.Mismatch
+			repeated PartialPathItem children = 1;
+		}
+	bool match = 1;
+	Mismatch mismatch = 2;
+}
+message FastUpdateFileRequest { // aiserver.v1.FastUpdateFileRequest
+		message LocalFile { // aiserver.v1.FastUpdateFileRequest.LocalFile
+			File file = 1;
+			string hash = 2;
+			string unencrypted_relative_workspace_path = 3;
+		}
+		enum UpdateType { // aiserver.v1.FastUpdateFileRequest.UpdateType
+			UPDATE_TYPE_UNSPECIFIED = 0;
+			UPDATE_TYPE_ADD = 1;
+			UPDATE_TYPE_DELETE = 2;
+			UPDATE_TYPE_MODIFY = 3;
+		}
+	RepositoryInfo repository = 1;
+	PartialPathItem directory = 2;
+	LocalFile local_file = 3;
+	repeated PartialPathItem ancestor_spline = 4;
+	UpdateType update_type = 5;
+}
+message FastUpdateFileResponse { // aiserver.v1.FastUpdateFileResponse
+		enum Status { // aiserver.v1.FastUpdateFileResponse.Status
+			STATUS_UNSPECIFIED = 0;
+			STATUS_SUCCESS = 1;
+			STATUS_FAILURE = 2;
+			STATUS_EXPECTED_FAILURE = 3;
+		}
+	Status status = 1;
+}
+message SearchRepositoryRequest { // aiserver.v1.SearchRepositoryRequest
+	string query = 1;
+	RepositoryInfo repository = 2;
+	int32 top_k = 3;
+	ModelDetails model_details = 4;
+	bool rerank = 5;
+	optional bool context_cache_request = 6;
+	optional string glob_filter = 7;
+	optional string not_glob_filter = 8;
+	optional int32 race_n_requests = 9;
+}
+message SearchRepositoryResponse { // aiserver.v1.SearchRepositoryResponse
+	repeated CodeResult code_results = 1;
+}
+message RemoveRepositoryRequest { // aiserver.v1.RemoveRepositoryRequest
+	RepositoryInfo repository = 1;
+}
+message RemoveRepositoryResponse { // aiserver.v1.RemoveRepositoryResponse
+		enum Status { // aiserver.v1.RemoveRepositoryResponse.Status
+			STATUS_UNSPECIFIED = 0;
+			STATUS_NOT_FOUND = 1;
+			STATUS_NOT_AUTHORIZED = 2;
+			STATUS_STARTED = 3;
+			STATUS_SUCCESS = 4;
+		}
+	Status status = 1;
+}
+message SemSearchRequest { // aiserver.v1.SemSearchRequest
+	SearchRepositoryRequest request = 1;
+}
+message SemSearchResponse { // aiserver.v1.SemSearchResponse
+		message SemSearchMetadata { // aiserver.v1.SemSearchResponse.SemSearchMetadata
+			optional string query_embedding_model = 1;
+			optional int32 server_side_latency_ms = 2;
+			optional int32 embed_latency_ms = 3;
+			optional int32 knn_latency_ms = 4;
+		}
+	SearchRepositoryResponse response = 1;
+	optional SemSearchMetadata metadata = 2;
+	repeated CodeResultWithClassificationInfo code_results = 3;
+}
+message CodeResultWithClassificationInfo { // aiserver.v1.CodeResultWithClassificationInfo
+		message LineNumberClassification { // aiserver.v1.CodeResultWithClassificationInfo.LineNumberClassification
+			DetailedLine detailed_line = 1;
+			string query_computed_for = 2;
+			repeated string matched_strings = 3;
+			SimpleRange highlight_range = 4;
+		}
+	CodeResult code_result = 1;
+	optional LineNumberClassification line_number_classification = 2;
+}
+message EnsureIndexCreatedRequest { // aiserver.v1.EnsureIndexCreatedRequest
+	RepositoryInfo repository = 1;
+}
+message EnsureIndexCreatedResponse { // aiserver.v1.EnsureIndexCreatedResponse
+}
+message GetHighLevelFolderDescriptionRequest { // aiserver.v1.GetHighLevelFolderDescriptionRequest
+		message Readme { // aiserver.v1.GetHighLevelFolderDescriptionRequest.Readme
+			string relative_workspace_path = 1;
+			string contents = 2;
+		}
+	repeated Readme readmes = 1;
+	repeated string top_level_relative_workspace_paths = 2;
+	string workspace_root_path = 4;
+}
+message GetHighLevelFolderDescriptionResponse { // aiserver.v1.GetHighLevelFolderDescriptionResponse
+	string description = 1;
+}
+message GetEmbeddingsRequest { // aiserver.v1.GetEmbeddingsRequest
+	repeated string texts = 1;
+}
+message GetEmbeddingsResponse { // aiserver.v1.GetEmbeddingsResponse
+		message Embedding { // aiserver.v1.GetEmbeddingsResponse.Embedding
+			repeated float embedding = 1;
+		}
+	repeated Embedding embeddings = 2;
+}
+message GetUploadLimitsRequest { // aiserver.v1.GetUploadLimitsRequest
+	optional RepositoryInfo repository = 1;
+}
+message GetUploadLimitsResponse { // aiserver.v1.GetUploadLimitsResponse
+	int32 soft_limit = 1;
+	int32 hard_limit = 2;
+}
+message GetNumFilesToSendRequest { // aiserver.v1.GetNumFilesToSendRequest
+	RepositoryInfo repository = 1;
+}
+message GetNumFilesToSendResponse { // aiserver.v1.GetNumFilesToSendResponse
+	int32 num_files = 1;
+}
+message GetAvailableChunkingStrategiesRequest { // aiserver.v1.GetAvailableChunkingStrategiesRequest
+	RepositoryInfo repository = 1;
+}
+message GetAvailableChunkingStrategiesResponse { // aiserver.v1.GetAvailableChunkingStrategiesResponse
+	repeated ChunkingStrategy chunking_strategies = 1;
+}
+message GetLineNumberClassificationsRequest { // aiserver.v1.GetLineNumberClassificationsRequest
+	string query = 1;
+	repeated CodeResult code_results = 2;
+}
+message GetLineNumberClassificationsResponse { // aiserver.v1.GetLineNumberClassificationsResponse
+	CodeResultWithClassificationInfo classified_result = 1;
+}
+service AiService {
+	rpc HealthCheck(HealthCheckRequest) returns ( HealthCheckResponse) {}
+	rpc PrivacyCheck(PrivacyCheckRequest) returns ( PrivacyCheckResponse) {}
+	rpc TimeLeftHealthCheck(HealthCheckRequest) returns ( TimeLeftHealthCheckResponse) {}
+	rpc ThrowErrorCheck(ThrowErrorCheckRequest) returns ( ThrowErrorCheckResponse) {}
+	rpc AvailableModels(AvailableModelsRequest) returns ( AvailableModelsResponse) {}
+	rpc StreamChatTryReallyHard(GetChatRequest) returns (stream StreamChatResponse) {}
+	rpc RerankDocuments(RerankDocumentsRequest) returns ( RerankDocumentsResponse) {}
+	rpc StreamComposer(GetComposerChatRequest) returns (stream StreamChatResponse) {}
+	rpc StreamComposerContext(StreamChatContextRequest) returns (stream StreamChatContextResponse) {}
+	rpc WarmComposerCache(GetComposerChatRequest) returns ( WarmComposerCacheResponse) {}
+	rpc KeepComposerCacheWarm(KeepComposerCacheWarmRequest) returns ( KeepComposerCacheWarmResponse) {}
+	rpc StreamPotentialLocs(PotentialLocsRequest) returns (stream PotentialLocsResponse) {}
+	rpc StreamPotentialLocsUnderneath(PotentialLocsUnderneathRequest) returns (stream PotentialLocsUnderneathResponse) {}
+	rpc StreamPotentialLocsInitialQueries(PotentialLocsInitialQueriesRequest) returns (stream PotentialLocsInitialQueriesResponse) {}
+	rpc StreamNotepadChat(GetNotepadChatRequest) returns (stream StreamChatResponse) {}
+	rpc GetChatTitle(GetChatTitleRequest) returns ( GetChatTitleResponse) {}
+	rpc GetCompletion(GetCompletionRequest) returns ( GetCompletionResponse) {}
+	rpc GetSearch(GetSearchRequest) returns ( GetSearchResponse) {}
+	rpc StreamInlineEdits(StreamInlineEditsRequest) returns (stream StreamInlineEditsResponse) {}
+	rpc SummarizeConversation(GetChatRequest) returns ( SummarizeConversationResponse) {}
+	rpc IsolatedTreesitter(IsolatedTreesitterRequest) returns ( IsolatedTreesitterResponse) {}
+	rpc GetSimplePrompt(GetSimplePromptRequest) returns ( GetSimplePromptResponse) {}
+	rpc CheckLongFilesFit(GetChatRequest) returns ( CheckLongFilesFitResponse) {}
+	rpc GetEvaluationPrompt(GetEvaluationPromptRequest) returns ( GetEvaluationPromptResponse) {}
+	rpc GetUserInfo(GetUserInfoRequest) returns ( GetUserInfoResponse) {}
+	rpc ClearAndRedoEntireBucket(ClearAndRedoEntireBucketRequest) returns ( ClearAndRedoEntireBucketResponse) {}
+	rpc StreamBranchGemini(StreamBranchGeminiRequest) returns (stream StreamBranchGeminiResponse) {}
+	rpc StreamBranchFileSelections(StreamBranchFileSelectionsRequest) returns (stream StreamBranchFileSelectionsResponse) {}
+	rpc StreamBackgroundEdit(StreamBackgroundEditRequest) returns (stream StreamChatResponse) {}
+	rpc StreamGPTFourEdit(StreamGPTFourEditRequest) returns (stream StreamChatResponse) {}
+	rpc StreamChat(GetChatRequest) returns (stream StreamChatResponse) {}
+	rpc StreamChatWeb(GetChatRequest) returns (stream StreamChatResponse) {}
+	rpc WarmChatCache(WarmChatCacheRequest) returns ( WarmChatCacheResponse) {}
+	rpc StreamEdit(StreamEditRequest) returns (stream StreamChatResponse) {}
+	rpc PreloadEdit(PreloadEditRequest) returns ( PreloadEditResponse) {}
+	rpc StreamFastEdit(StreamFastEditRequest) returns (stream StreamFastEditResponse) {}
+	rpc StreamGenerate(StreamGenerateRequest) returns (stream StreamChatResponse) {}
+	rpc StreamInlineLongCompletion(StreamInlineLongCompletionRequest) returns (stream StreamChatResponse) {}
+	rpc SlashEdit(SlashEditRequest) returns (stream SlashEditResponse) {}
+	rpc SlashEditFollowUpWithPreviousEdits(SlashEditFollowUpWithPreviousEditsRequest) returns (stream StreamSlashEditFollowUpWithPreviousEditsResponse) {}
+	rpc StreamAiPreviews(StreamAiPreviewsRequest) returns (stream StreamAiPreviewsResponse) {}
+	rpc ShouldTurnOnCppOnboarding(ShouldTurnOnCppOnboardingRequest) returns ( ShouldTurnOnCppOnboardingResponse) {}
+	rpc StreamReview(ReviewRequest) returns (stream ReviewResponse) {}
+	rpc StreamReviewChat(ReviewChatRequest) returns (stream ReviewChatResponse) {}
+	rpc CheckQueuePosition(CheckQueuePositionRequest) returns ( CheckQueuePositionResponse) {}
+	rpc CheckUsageBasedPrice(CheckUsageBasedPriceRequest) returns ( CheckUsageBasedPriceResponse) {}
+	rpc DoThisForMeCheck(DoThisForMeCheckRequest) returns ( DoThisForMeCheckResponse) {}
+	rpc StreamDoThisForMe(DoThisForMeRequest) returns (stream DoThisForMeResponseWrapped) {}
+	rpc StreamChatToolformer(GetChatRequest) returns (stream StreamChatToolformerResponse) {}
+	rpc StreamChatToolformerContinue(StreamChatToolformerContinueRequest) returns (stream StreamChatToolformerResponse) {}
+	rpc PushAiThought(PushAiThoughtRequest) returns ( PushAiThoughtResponse) {}
+	rpc CheckDoableAsTask(CheckDoableAsTaskRequest) returns ( CheckDoableAsTaskResponse) {}
+	rpc ReportGroundTruthCandidate(ReportGroundTruthCandidateRequest) returns ( ReportGroundTruthCandidateResponse) {}
+	rpc ReportCmdKFate(ReportCmdKFateRequest) returns ( ReportCmdKFateResponse) {}
+	rpc ShowWelcomeScreen(ShowWelcomeScreenRequest) returns ( ShowWelcomeScreenResponse) {}
+	rpc InterfaceAgentInit(InterfaceAgentInitRequest) returns ( InterfaceAgentInitResponse) {}
+	rpc StreamInterfaceAgentStatus(StreamInterfaceAgentStatusRequest) returns (stream StreamInterfaceAgentStatusResponse) {}
+	rpc TaskGetInterfaceAgentStatus(TaskGetInterfaceAgentStatusRequest) returns (stream TaskGetInterfaceAgentStatusResponseWrapped) {}
+	rpc TaskInit(TaskInitRequest) returns ( TaskInitResponse) {}
+	rpc TaskPause(TaskPauseRequest) returns ( TaskPauseResponse) {}
+	rpc TaskInfo(TaskInfoRequest) returns ( TaskInfoResponse) {}
+	rpc TaskStreamLog(TaskStreamLogRequest) returns (stream TaskStreamLogResponse) {}
+	rpc TaskSendMessage(TaskSendMessageRequest) returns ( TaskSendMessageResponse) {}
+	rpc TaskProvideResult(TaskProvideResultRequest) returns ( TaskProvideResultResponse) {}
+	rpc CreateExperimentalIndex(CreateExperimentalIndexRequest) returns ( CreateExperimentalIndexResponse) {}
+	rpc ListExperimentalIndexFiles(ListExperimentalIndexFilesRequest) returns ( ListExperimentalIndexFilesResponse) {}
+	rpc ListenExperimentalIndex(ListenExperimentalIndexRequest) returns (stream ListenExperimentalIndexResponse) {}
+	rpc RegisterFileToIndex(RegisterFileToIndexRequest) returns ( RequestReceivedResponse) {}
+	rpc SetupIndexDependencies(SetupIndexDependenciesRequest) returns ( SetupIndexDependenciesResponse) {}
+	rpc ComputeIndexTopoSort(ComputeIndexTopoSortRequest) returns ( ComputeIndexTopoSortResponse) {}
+	rpc StreamChatDeepContext(StreamChatDeepContextRequest) returns (stream StreamChatDeepContextResponse) {}
+	rpc ChooseCodeReferences(ChooseCodeReferencesRequest) returns ( RequestReceivedResponse) {}
+	rpc RegisterCodeReferences(RegisterCodeReferencesRequest) returns ( RegisterCodeReferencesResponse) {}
+	rpc ExtractPaths(ExtractPathsRequest) returns ( ExtractPathsResponse) {}
+	rpc SummarizeWithReferences(SummarizeWithReferencesRequest) returns ( RequestReceivedResponse) {}
+	rpc DocumentationQuery(DocumentationQueryRequest) returns ( DocumentationQueryResponse) {}
+	rpc AvailableDocs(AvailableDocsRequest) returns ( AvailableDocsResponse) {}
+	rpc ReportFeedback(ReportFeedbackRequest) returns ( ReportFeedbackResponse) {}
+	rpc ReportBug(ReportBugRequest) returns ( ReportBugResponse) {}
+	rpc StreamChatContext(StreamChatContextRequest) returns (stream StreamChatContextResponse) {}
+	rpc GenerateTldr(GenerateTldrRequest) returns ( GenerateTldrResponse) {}
+	rpc TaskStreamChatContext(TaskStreamChatContextRequest) returns (stream TaskStreamChatContextResponseWrapped) {}
+	rpc RerankResults(RerankerRequest) returns ( RerankerResponse) {}
+	rpc ModelQuery(ModelQueryRequest) returns ( ModelQueryResponse) {}
+	rpc ModelQueryV2(ModelQueryRequest) returns (stream ModelQueryResponseV2) {}
+	rpc IntentPrediction(IntentPredictionRequest) returns ( IntentPredictionResponse) {}
+	rpc StreamCursorTutor(StreamCursorTutorRequest) returns (stream StreamCursorTutorResponse) {}
+	rpc CheckFeatureStatus(CheckFeatureStatusRequest) returns ( CheckFeatureStatusResponse) {}
+	rpc GetEffectiveTokenLimit(GetEffectiveTokenLimitRequest) returns ( GetEffectiveTokenLimitResponse) {}
+	rpc GetContextScores(ContextScoresRequest) returns ( ContextScoresResponse) {}
+	rpc StreamCpp(StreamCppRequest) returns (stream StreamCppResponse) {}
+	rpc CppConfig(CppConfigRequest) returns ( CppConfigResponse) {}
+	rpc CppEditHistoryStatus(CppEditHistoryStatusRequest) returns ( CppEditHistoryStatusResponse) {}
+	rpc CppAppend(CppAppendRequest) returns ( CppAppendResponse) {}
+	rpc CheckNumberConfig(CheckNumberConfigRequest) returns ( CheckNumberConfigResponse) {}
+	rpc StreamTerminalAutocomplete(StreamTerminalAutocompleteRequest) returns (stream StreamTerminalAutocompleteResponse) {}
+	rpc StreamPseudocodeGenerator(StreamPseudocodeGeneratorRequest) returns (stream StreamPseudocodeGeneratorResponse) {}
+	rpc StreamPseudocodeMapper(StreamPseudocodeMapperRequest) returns (stream StreamPseudocodeMapperResponse) {}
+	rpc StreamAiLintBug(StreamAiLintBugRequest) returns (stream StreamAiLintBugResponse) {}
+	rpc StreamAiCursorHelp(StreamAiCursorHelpRequest) returns (stream StreamAiCursorHelpResponse) {}
+	rpc LogUserLintReply(LogUserLintReplyRequest) returns ( LogUserLintReplyResponse) {}
+	rpc LogLinterExplicitUserFeedback(LogLinterExplicitUserFeedbackRequest) returns ( LogLinterExplicitUserFeedbackResponse) {}
+	rpc StreamFixMarkers(FixMarkersRequest) returns (stream FixMarkersResponse) {}
+	rpc ReportInlineAction(ReportInlineActionRequest) returns ( ReportInlineActionResponse) {}
+	rpc StreamPriomptPrompt(StreamPriomptPromptRequest) returns (stream StreamPriomptPromptResponse) {}
+	rpc StreamLint(StreamLintRequest) returns (stream StreamChatResponse) {}
+	rpc StreamNewLintRule(StreamNewRuleRequest) returns (stream StreamChatResponse) {}
+	rpc AiProject(AiProjectRequest) returns (stream AiProjectResponse) {}
+	rpc ToCamelCase(ToCamelCaseRequest) returns ( ToCamelCaseResponse) {}
+	rpc ReportGenerationFeedback(ReportGenerationFeedbackRequest) returns ( ReportGenerationFeedbackResponse) {}
+	rpc GetThoughtAnnotation(GetThoughtAnnotationRequest) returns ( GetThoughtAnnotationResponse) {}
+	rpc StreamWebCmdKV1(StreamWebCmdKV1Request) returns (stream StreamWebCmdKV1Response) {}
+	rpc StreamNextCursorPrediction(StreamNextCursorPredictionRequest) returns (stream StreamNextCursorPredictionResponse) {}
+	rpc IsCursorPredictionEnabled(IsCursorPredictionEnabledRequest) returns ( IsCursorPredictionEnabledResponse) {}
+	rpc GetCppEditClassification(GetCppEditClassificationRequest) returns ( GetCppEditClassificationResponse) {}
+	rpc GetTerminalCompletion(GetTerminalCompletionRequest) returns ( GetTerminalCompletionResponse) {}
+	rpc TakeNotesOnCommitDiff(TakeNotesOnCommitDiffRequest) returns ( TakeNotesOnCommitDiffResponse) {}
+	rpc BulkEmbed(BulkEmbedRequest) returns ( BulkEmbedResponse) {}
+	rpc ContinueChatRequestWithCommits(ContinueChatRequestWithCommitsRequest) returns ( EmptyResponse) {}
+	rpc BackgroundCmdKEval(BackgroundCmdKEvalRequest) returns (stream BackgroundCmdKEvalResponse) {}
+	rpc BackgroundCmdK(BackgroundCmdKRequest) returns (stream BackgroundCmdKResponse) {}
+	rpc StreamCursorMotion(StreamCursorMotionRequest) returns (stream StreamCursorMotionResponse) {}
+	rpc CalculateAutoSelection(CalculateAutoSelectionRequest) returns ( CalculateAutoSelectionResponse) {}
+	rpc GetAtSymbolSuggestions(GetAtSymbolSuggestionsRequest) returns ( GetAtSymbolSuggestionsResponse) {}
+	rpc GetCodebaseQuestions(GetChatRequest) returns ( GetCodebaseQuestionsResponse) {}
+	rpc GetRankedContextFromContextBank(GetRankedContextFromContextBankRequest) returns (stream GetRankedContextFromContextBankResponse) {}
+	rpc CppEditHistoryAppend(EditHistoryAppendChangesRequest) returns ( EditHistoryAppendChangesResponse) {}
+	rpc DevOnlyGetPastRequestIds(DevOnlyGetPastRequestIdsRequest) returns ( DevOnlyGetPastRequestIdsResponse) {}
+	rpc GetFilesForComposer(GetFilesForComposerRequest) returns ( GetFilesForComposerResponse) {}
+	rpc TryParseTypeScriptTreeSitter(TryParseTypeScriptTreeSitterRequest) returns ( TryParseTypeScriptTreeSitterResponse) {}
+	rpc NameTab(NameTabRequest) returns ( NameTabResponse) {}
+	rpc IsTerminalFinished(IsTerminalFinishedRequest) returns ( IsTerminalFinishedResponse) {}
+	rpc TestModelStatus(TestModelStatusRequest) returns ( TestModelStatusResponse) {}
+	rpc FindBugs(FindBugsRequest) returns ( FindBugsResponse) {}
+	rpc ContextReranking(ContextRerankingRequest) returns ( ContextRerankingResponse) {}
+	rpc AutoContext(AutoContextRequest) returns ( AutoContextResponse) {}
+	rpc WriteGitCommitMessage(WriteGitCommitMessageRequest) returns ( WriteGitCommitMessageResponse) {}
+	rpc StreamBugBot(StreamBugBotRequest) returns (stream StreamBugBotResponse) {}
+	rpc CheckBugBotPrice(CheckBugBotPriceRequest) returns ( CheckBugBotPriceResponse) {}
+	rpc CheckBugBotTelemetryHealthy(CheckBugBotTelemetryHealthyRequest) returns ( CheckBugBotTelemetryHealthyResponse) {}
+	rpc GetSuggestedBugBotIterations(GetSuggestedBugBotIterationsRequest) returns ( GetSuggestedBugBotIterationsResponse) {}
+	rpc TestBidi(TestBidiRequest) returns ( TestBidiResponse) {}
+}
+service RepositoryService {
+	rpc FastRepoInitHandshake(FastRepoInitHandshakeRequest) returns ( FastRepoInitHandshakeResponse) {}
+	rpc SyncMerkleSubtree(SyncMerkleSubtreeRequest) returns ( SyncMerkleSubtreeResponse) {}
+	rpc FastUpdateFile(FastUpdateFileRequest) returns ( FastUpdateFileResponse) {}
+	rpc SearchRepositoryV2(SearchRepositoryRequest) returns ( SearchRepositoryResponse) {}
+	rpc RemoveRepositoryV2(RemoveRepositoryRequest) returns ( RemoveRepositoryResponse) {}
+	rpc SemSearchFast(SemSearchRequest) returns (stream SemSearchResponse) {}
+	rpc SemSearch(SemSearchRequest) returns (stream SemSearchResponse) {}
+	rpc EnsureIndexCreated(EnsureIndexCreatedRequest) returns ( EnsureIndexCreatedResponse) {}
+	rpc GetHighLevelFolderDescription(GetHighLevelFolderDescriptionRequest) returns ( GetHighLevelFolderDescriptionResponse) {}
+	rpc GetEmbeddings(GetEmbeddingsRequest) returns ( GetEmbeddingsResponse) {}
+	rpc GetUploadLimits(GetUploadLimitsRequest) returns ( GetUploadLimitsResponse) {}
+	rpc GetNumFilesToSend(GetNumFilesToSendRequest) returns ( GetNumFilesToSendResponse) {}
+	rpc GetAvailableChunkingStrategies(GetAvailableChunkingStrategiesRequest) returns ( GetAvailableChunkingStrategiesResponse) {}
+	rpc GetLineNumberClassifications(GetLineNumberClassificationsRequest) returns (stream GetLineNumberClassificationsResponse) {}
+}

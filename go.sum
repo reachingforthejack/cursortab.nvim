@@ -1,0 +1,10 @@
+connectrpc.com/connect v1.17.0 h1:W0ZqMhtVzn9Zhn2yATuUokDLO5N+gIuBWMOnsQrfmZk=
+connectrpc.com/connect v1.17.0/go.mod h1:0292hj1rnx8oFrStN7cB4jjVBeqs+Yx5yDIC2prWDO8=
+github.com/everestmz/cursor-rpc v0.0.0-20241217074328-83d363192331 h1:9aj2rJIDRwlaV809sujNRJUNg6GQry9ZW5C0VdmH88Q=
+github.com/everestmz/cursor-rpc v0.0.0-20241217074328-83d363192331/go.mod h1:KhWBNw3NYM9PXGfABP2cgbBmPLA9cfpF7eb2e+Vcyxs=
+github.com/neovim/go-client v1.2.1 h1:kl3PgYgbnBfvaIoGYi3ojyXH0ouY6dJY/rYUCssZKqI=
+github.com/neovim/go-client v1.2.1/go.mod h1:EeqCP3z1vJd70JTaH/KXz9RMZ/nIgEFveX83hYnh/7c=
+github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
+github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+google.golang.org/protobuf v1.34.2 h1:6xV6lTsCfpGD21XK49h7MhtcApnLqkfYgPcdHftf6hg=
+google.golang.org/protobuf v1.34.2/go.mod h1:qYOHts0dSfpeUzUFpOMr/WGzszTmLH+DiWniOlNbLDw=
