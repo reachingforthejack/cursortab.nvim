@@ -45,9 +45,12 @@ func New(workspaceRootPath string) (*CursorTab, error) {
 	}, nil
 }
 
-func (c *CursorTab) AddFile(id int, path, contents, language string, numLines int) {
+func (c *CursorTab) AddFile(id int, path, contents string, numLines int) {
 	c.activeFileMutex.Lock()
 	defer c.activeFileMutex.Unlock()
+
+	fileExt := strings.ToLower(strings.TrimPrefix(path, "."))
+	language := languageFromExtension(fileExt)
 
 	f := &aiserverv1.CurrentFileInfo{
 		RelativeWorkspacePath: path,

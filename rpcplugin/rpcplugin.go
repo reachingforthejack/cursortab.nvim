@@ -93,7 +93,7 @@ func (p *NeovimPlugin) hcbCursortabInit() {
 			contents += "\n"
 		}
 
-		tab.AddFile(int(buf), path, contents, "go", len(bufLines))
+		tab.AddFile(int(buf), path, contents, len(bufLines))
 	}
 
 	p.tab = tab
