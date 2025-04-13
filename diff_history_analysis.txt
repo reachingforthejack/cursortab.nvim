@@ -1,0 +1,25 @@
+1. Structure of the Diff History Sent into the Completions
+
+Cursor's Tab mode utilizes a completion API that processes contextual information, including recent code changes and linter errors. While the exact structure of the diff history is not publicly documented, 
+it's inferred that the API processes these inputs to generate relevant code suggestions.​
+
+2. How Are the Files Truncated?
+
+The completion requests are designed to focus on a specific portion of the code surrounding the cursor's position. This localized context ensures that suggestions are pertinent to the current editing focus.​
+
+3. How Large Does the History Get?
+
+The history maintained for generating completions is likely constrained to recent edits and relevant context, optimizing performance and relevance. The exact size is not specified but is presumed to be limited
+to ensure efficient processing.​
+
+4. What Is the Exact Chain of Requests Fired Between Making the Completion Stream and Making the Cursor Jump?
+
+The process involves initiating a completion request, receiving a stream of suggestions, and upon selection, updating the cursor position accordingly. This sequence facilitates a seamless editing experience.​
+
+5. Anything Else Useful in Here
+
+Partial Accepts: To accept the next word of a suggestion, press Ctrl (or Command) and the right arrow. This feature can be enabled in Cursor Settings under Features > Cursor Tab.​
+
+UI Indicators: Suggestions that add text appear as grey text, while those that modify existing code are displayed as a diff popup to the right of the current line.​
+
+Toggle Feature: To enable or disable the feature, hover over the "Cursor Tab" icon in the status bar at the bottom right of the application.
