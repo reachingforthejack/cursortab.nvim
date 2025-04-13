@@ -6,6 +6,7 @@ import (
 	"strings"
 	"sync"
 
+	"cursortab.nvim/vbuf"
 	"github.com/everestmz/cursor-rpc"
 	aiserverv1 "github.com/everestmz/cursor-rpc/cursor/gen/aiserver/v1"
 	"github.com/everestmz/cursor-rpc/cursor/gen/aiserver/v1/aiserverv1connect"
@@ -15,118 +16,120 @@ import (
 
 const debugOutput = true
 
+// CursorTab implements the cursor RPC api for tab completions
 type CursorTab struct {
 	creds             *cursor.CursorCredentials
 	service           aiserverv1connect.AiServiceClient
-	projectFiles      map[int]*aiserverv1.CurrentFileInfo
 	workspaceRootPath string
-	activeFileId      int
-	activeFileMutex   sync.Mutex
+
+	diffHistory []string
+
+	currentFile      *aiserverv1.CurrentFileInfo
+	currentFileMutex *sync.Mutex
 }
 
 func New(workspaceRootPath string) (*CursorTab, error) {
-	creds, err := cursor.GetDefaultCredentials()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to retrieve credentials")
+	var creds *cursor.CursorCredentials
+	service := cursor.NewAiServiceClient()
+
+	currentFile := &aiserverv1.CurrentFileInfo{
+		RelativeWorkspacePath: "",
+		Contents:              "",
+		RelyOnFilesync:        false,
+		WorkspaceRootPath:     workspaceRootPath,
+		CursorPosition: &aiserverv1.CursorPosition{
+			Line:   int32(0),
+			Column: int32(0),
+		},
 	}
 
-	service := cursor.NewAiServiceClient()
-	projectFiles := make(map[int]*aiserverv1.CurrentFileInfo)
-	activeFileId := -1
-	activeFileMutex := sync.Mutex{}
+	currentFileMutex := &sync.Mutex{}
+	diffHistory := []string{}
 
-	return &CursorTab{
+	ct := &CursorTab{
 		creds,
 		service,
-		projectFiles,
 		workspaceRootPath,
-		activeFileId,
-		activeFileMutex,
-	}, nil
+		diffHistory,
+		currentFile,
+		currentFileMutex,
+	}
+
+	go func() {
+		ct.currentFileMutex.Lock()
+		defer ct.currentFileMutex.Unlock()
+
+		creds, err := cursor.GetDefaultCredentials()
+		if err != nil {
+			log.Fatalf("failed to retrieve credentials: %v", err)
+		}
+
+		ct.creds = creds
+	}()
+
+	return ct, nil
 }
 
-func (c *CursorTab) AddFile(id int, path, contents string, numLines int) {
-	c.activeFileMutex.Lock()
-	defer c.activeFileMutex.Unlock()
+func (c *CursorTab) CurrentFileVbuf() (*vbuf.Vbuf, error) {
+	if c.currentFile == nil {
+		return nil, errors.New("no current file set")
+	}
+
+	vb := vbuf.New(&c.currentFile.Contents, int(c.currentFile.CursorPosition.Line), int(c.currentFile.CursorPosition.Column))
+	return &vb, nil
+}
+
+func (c *CursorTab) SetCurrentLineNumber(line int) {
+	c.currentFileMutex.Lock()
+	defer c.currentFileMutex.Unlock()
+
+	if c.currentFile == nil {
+		log.Printf("no current file set")
+		return
+	}
+
+	c.currentFile.CursorPosition.Line = int32(line)
+}
+
+func (c *CursorTab) SetCurrentFile(path, contents string, line, col int) *vbuf.Vbuf {
+	c.currentFileMutex.Lock()
+	defer c.currentFileMutex.Unlock()
 
 	fileExt := strings.ToLower(strings.TrimPrefix(path, "."))
 	language := languageFromExtension(fileExt)
 
-	f := &aiserverv1.CurrentFileInfo{
-		RelativeWorkspacePath: path,
-		Contents:              contents,
-		RelyOnFilesync:        false,
+	vb := vbuf.New(&contents, line, col)
+	log.Printf("vbuf created for current file: %v\n", vb.DebugString())
 
-		TotalNumberOfLines: int32(numLines),
-
-		LanguageId: language, // go is go i don't know what other are :(
-
-		WorkspaceRootPath: c.workspaceRootPath,
+	if c.currentFile.RelativeWorkspacePath != path {
+		c.diffHistory = []string{}
 	}
 
-	c.projectFiles[id] = f
-
-	if c.activeFileId == -1 {
-		c.activeFileId = 0
-	}
-}
-
-func (c *CursorTab) SetActiveFile(id, pos, line int) {
-	c.activeFileMutex.Lock()
-	defer c.activeFileMutex.Unlock()
-
-	f, ok := c.projectFiles[id]
-	if !ok {
-		return
-	}
-
-	c.activeFileId = id
-
-	f.CursorPosition = &aiserverv1.CursorPosition{
+	c.currentFile.Contents = contents
+	c.currentFile.LanguageId = language
+	c.currentFile.RelativeWorkspacePath = path
+	c.currentFile.TotalNumberOfLines = int32(vb.GetLineCount())
+	c.currentFile.CursorPosition = &aiserverv1.CursorPosition{
 		Line:   int32(line),
-		Column: int32(pos),
-	}
-}
-
-func (c *CursorTab) SetActiveFileContents(contents string, numLines int) error {
-	activeFile, err := c.activeFile()
-	if err != nil {
-		return errors.Wrap(err, "failed to get active file")
+		Column: int32(col),
 	}
 
-	c.activeFileMutex.Lock()
-	defer c.activeFileMutex.Unlock()
-
-	activeFile.Contents = contents
-	activeFile.TotalNumberOfLines = int32(numLines)
-	return nil
-}
-
-func (c *CursorTab) activeFile() (*aiserverv1.CurrentFileInfo, error) {
-	c.activeFileMutex.Lock()
-	defer c.activeFileMutex.Unlock()
-
-	activeFile, ok := c.projectFiles[c.activeFileId]
-	if !ok {
-		return nil, errors.New("active file not found")
-	}
-
-	return activeFile, nil
+	return &vb
 }
 
 func (c *CursorTab) GetCursorPredictions(ctx context.Context) (*TextJump, error) {
-	af, err := c.activeFile()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get active file")
+	c.currentFileMutex.Lock()
+	defer c.currentFileMutex.Unlock()
+
+	if c.currentFile == nil {
+		return nil, errors.New("no current file set")
 	}
 
 	req := &aiserverv1.StreamNextCursorPredictionRequest{
-		CurrentFile: af,
-		ModelName:   proto.String(""),
-
-		DiffHistory:     []string{},
-		DiffHistoryKeys: []string{},
-
+		CurrentFile:         c.currentFile,
+		ModelName:           proto.String(""),
+		DiffHistory:         c.diffHistory,
+		DiffHistoryKeys:     []string{},
 		ContextItems:        []*aiserverv1.CppContextItem{},
 		ParameterHints:      []*aiserverv1.CppParameterHint{},
 		LspContexts:         []*aiserverv1.LspSubgraphFullContext{},
@@ -136,8 +139,9 @@ func (c *CursorTab) GetCursorPredictions(ctx context.Context) (*TextJump, error)
 		FileDiffHistories:   []*aiserverv1.CppFileDiffHistory{},
 		MergedDiffHistories: []*aiserverv1.CppFileDiffHistory{},
 		BlockDiffPatches:    []*aiserverv1.BlockDiffPatch{},
-
-		CppIntentInfo: &aiserverv1.CppIntentInfo{Source: IntentManualTrigger},
+		CppIntentInfo: &aiserverv1.CppIntentInfo{
+			Source: IntentManualTrigger,
+		},
 	}
 
 	stream, err := c.service.StreamNextCursorPrediction(ctx, cursor.NewRequest(c.creds, req))
@@ -149,14 +153,12 @@ func (c *CursorTab) GetCursorPredictions(ctx context.Context) (*TextJump, error)
 
 	for stream.Receive() {
 		resp := stream.Msg()
-
 		tj = &TextJump{
 			Text:       resp.Text,
 			LineNumber: int(resp.LineNumber),
 			OutOfRange: resp.IsNotInRange,
 			FileName:   resp.FileName,
 		}
-
 		log.Printf("received response: %v\n", tj)
 	}
 
@@ -167,86 +169,37 @@ func (c *CursorTab) GetCursorPredictions(ctx context.Context) (*TextJump, error)
 	return tj, nil
 }
 
-func (c *CursorTab) GetCurrentLine() (string, error) {
-	c.activeFileMutex.Lock()
-	defer c.activeFileMutex.Unlock()
-
-	f, ok := c.projectFiles[c.activeFileId]
-	if !ok {
-		return "", errors.New("file not found")
+func (c *CursorTab) AddDiffHistory(diff string) {
+	if len(c.diffHistory) > 5 {
+		c.diffHistory = c.diffHistory[1:]
 	}
-
-	return strings.Split(f.Contents, "\n")[f.CursorPosition.Line-1], nil
+	c.diffHistory = append(c.diffHistory, diff)
 }
 
-func (c *CursorTab) GetCurrentLineSlicedAfterCurrentRow() (string, error) {
-	c.activeFileMutex.Lock()
-	defer c.activeFileMutex.Unlock()
+func (c *CursorTab) GetCompletions(ctx context.Context, reason string) (*vbuf.VbufDiff, error) {
+	c.currentFileMutex.Lock()
+	defer c.currentFileMutex.Unlock()
 
-	f, ok := c.projectFiles[c.activeFileId]
-	if !ok {
-		return "", errors.New("file not found")
+	if c.currentFile == nil {
+		return nil, errors.New("no current file set")
 	}
-
-	currLine := strings.Split(f.Contents, "\n")[f.CursorPosition.Line-1]
-
-	return currLine[f.CursorPosition.Column-1:], nil
-}
-
-func (c *CursorTab) GetCurrentLines() ([]string, error) {
-	c.activeFileMutex.Lock()
-	defer c.activeFileMutex.Unlock()
-
-	f, ok := c.projectFiles[c.activeFileId]
-	if !ok {
-		return nil, errors.New("file not found")
-	}
-
-	lines := strings.Split(f.Contents, "\n")
-
-	return lines, nil
-}
-
-func (c *CursorTab) GetFileContents(id int) (string, error) {
-	c.activeFileMutex.Lock()
-	defer c.activeFileMutex.Unlock()
-
-	f, ok := c.projectFiles[id]
-	if !ok {
-		return "", errors.New("file not found")
-	}
-
-	return f.Contents, nil
-}
-
-func (c *CursorTab) GetCompletions(ctx context.Context) (*TextPatch, error) {
-	af, err := c.activeFile()
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to get active file")
-	}
-
-	afId := c.activeFileId
 
 	req := &aiserverv1.StreamCppRequest{
-		CurrentFile:         af,
-		DiffHistory:         []string{},
+		CurrentFile:         c.currentFile,
+		DiffHistory:         c.diffHistory,
 		ModelName:           proto.String("main"),
 		FileDiffHistories:   []*aiserverv1.CppFileDiffHistory{},
 		MergedDiffHistories: []*aiserverv1.CppFileDiffHistory{},
 		BlockDiffPatches:    []*aiserverv1.BlockDiffPatch{},
 		GiveDebugOutput:     proto.Bool(debugOutput),
-
-		LspContexts:    []*aiserverv1.LspSubgraphFullContext{},
-		ContextItems:   []*aiserverv1.CppContextItem{},
-		ParameterHints: []*aiserverv1.CppParameterHint{},
+		LspContexts:         []*aiserverv1.LspSubgraphFullContext{},
+		ContextItems:        []*aiserverv1.CppContextItem{},
+		ParameterHints:      []*aiserverv1.CppParameterHint{},
 		CppIntentInfo: &aiserverv1.CppIntentInfo{
-			Source: IntentTyping,
+			Source: reason,
 		},
-
-		WorkspaceId: proto.String("mock-workspace-id"),
-
-		FilesyncUpdates: []*aiserverv1.FilesyncUpdateWithModelVersion{},
-
+		WorkspaceId:           proto.String("mock-workspace-id"),
+		FilesyncUpdates:       []*aiserverv1.FilesyncUpdateWithModelVersion{},
 		TimeSinceRequestStart: 0.0,
 		TimeAtRequestSend:     0.0,
 	}
@@ -256,38 +209,25 @@ func (c *CursorTab) GetCompletions(ctx context.Context) (*TextPatch, error) {
 		return nil, errors.Wrap(err, "failed to create stream")
 	}
 
-	var tp *TextPatch
+	suggestionStartLine := 0
+	startLineOffset := 0
+	endLineInclusive := 0
+	diffSrc := ""
 
 	for stream.Receive() {
 		resp := stream.Msg()
 
-		log.Printf("received response: %v\n", resp)
-
-		var newTp *TextPatch
-		if tp != nil {
-			newTp = tp
-		} else {
-			newTp = &TextPatch{
-				FileId: int(afId),
-			}
-		}
-
 		if resp.SuggestionStartLine != nil {
-			newTp.StartingLine = int(*resp.SuggestionStartLine)
+			suggestionStartLine = int(*resp.SuggestionStartLine)
 		}
 
 		if resp.RangeToReplace != nil {
-			newTp.Range = &TextPatchRange{
-				StartLine:  int(resp.RangeToReplace.StartLineNumber),
-				EndLineInc: int(resp.RangeToReplace.EndLineNumberInclusive),
-			}
-			tp = newTp
+			startLineOffset = int(resp.RangeToReplace.StartLineNumber)
+			endLineInclusive = int(resp.RangeToReplace.EndLineNumberInclusive)
 		}
 
-		// text streams in as appends, but the rest don't so we can concat the string here
 		if resp.Text != "" {
-			newTp.Content += resp.Text
-			tp = newTp
+			diffSrc += resp.Text
 		}
 
 		if resp.DoneStream != nil && *resp.DoneStream {
@@ -295,13 +235,22 @@ func (c *CursorTab) GetCompletions(ctx context.Context) (*TextPatch, error) {
 		}
 	}
 
+	startLineOffset += suggestionStartLine
+
 	if err := stream.Err(); err != nil {
 		return nil, errors.Wrap(err, "stream error")
 	}
 
-	log.Printf("final response: %v\n", tp)
+	baseVbuf, err := c.CurrentFileVbuf()
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to get current file vbuf")
+	}
 
-	return tp, nil
+	diff := vbuf.New(&diffSrc, 0, 0)
+	fullDiff := vbuf.NewVbufDiff(baseVbuf, diff, startLineOffset, endLineInclusive)
+	log.Printf("vbuf diff from completion: %v\n", fullDiff.DebugString())
+
+	return &fullDiff, nil
 }
 
 type TextJump struct {
@@ -309,18 +258,6 @@ type TextJump struct {
 	LineNumber int
 	Text       string
 	OutOfRange bool
-}
-
-type TextPatch struct {
-	FileId       int
-	Content      string
-	Range        *TextPatchRange
-	StartingLine int
-}
-
-type TextPatchRange struct {
-	StartLine  int
-	EndLineInc int
 }
 
 const (
