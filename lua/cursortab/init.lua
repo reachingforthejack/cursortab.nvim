@@ -1,5 +1,7 @@
 local M = {}
 
+M.command = 'CursorTab'
+
 M.config = {
 	sign_group = "CursortabGrp",
 	sign_name = "Cursortab",
@@ -79,10 +81,20 @@ function M.clear_cursor_tab_sign()
 	vim.fn.sign_unplace(M.config.sign_group, { buffer = bufnr })
 end
 
+---@param args string[]
+function M.tab(args)
+	vim.rpcrequest(M.get_chan(), "cursortab", args)
+end
+
 ---@param opts table
 ---@TODO: Define a struct for opts
 function M.setup(opts)
 	M.config = vim.tbl_deep_extend("force", M.config, opts or {})
+	api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+		callback = function()
+			M.tab {}
+		end,
+	})
 end
 
 return M

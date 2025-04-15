@@ -11,15 +11,11 @@ vim.cmd [[
 ]]
 
 vim.api.nvim_create_user_command(command, function(args)
-	vim.rpcrequest(require('cursortab').get_chan(), "cursortab", args.fargs)
+	require('cursortab').tab(args.fargs)
 end, { nargs = "*" })
 
-vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
-	callback = vim.cmd[command],
-})
-
 vim.keymap.set("i", "Plug(cursor-tab)", function()
-	vim.rpcrequest(require('cursor-tab').get_chan(), "cursortab_apply")
+	vim.rpcrequest(require('cursortab').get_chan(), "cursortab_apply")
 end, { silent = true })
 
 if not vim.fn.hasmapto("Plug(cursor-tab)") then
