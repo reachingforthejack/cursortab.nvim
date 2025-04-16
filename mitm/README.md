@@ -51,13 +51,13 @@ From the `mitm` directory with the virtual environment activated, run the follow
 - macOS and Linux:
 
 ```
-python -m grpc_tools.protoc -I=../cursor-rpc/cursor/aiserver/v1 --python_out=. --grpc_python_out=. ../cursor-rpc/cursor/aiserver/v1/aiserver.proto
+python -m grpc_tools.protoc -I=../cursor/v1 --python_out=. --grpc_python_out=. ../cursor/v1/aiserver.proto
 ```
 
 - Windows:
 
 ```
-python -m grpc_tools.protoc -I=..\cursor-rpc\cursor\aiserver\v1 --python_out=. --grpc_python_out=. ..\cursor-rpc\cursor\aiserver\v1\aiserver.proto
+python -m grpc_tools.protoc -I=..\cursor\v1 --python_out=. --grpc_python_out=. ..\cursor\v1\aiserver.proto
 ```
 
 This command will create the files `aiserver_pb2.py` and `aiserver_pb2_grpc.py`. These two files are excluded from version control and should be created every time `aiserver.proto` is changed.
@@ -76,6 +76,28 @@ The option `-s` selects a Python script to be used as an add-on, i.e., a simple 
 
 - `mitm_cursor_proto.py`: intercepts, decodes using Protobuf definitions, and logs gRPC messages for the `aiserver.v1.AiService`, saving the captured network flows to a `.mitm` file upon shutdown.
 - _add other script here ..._
+
+#### Decoding .mitm files
+
+RPC stream consists of collection of encoded messages. These encoded messages are simply the bytes in requests and responses payload.
+
+Using the script `decode_mitm.py` we can decode they payload and save a new version of the mitm file. In this new version the byte payload are replaced with JSON representation.
+
+To use the script, run it from the `mitm` directory (with the virtual environment activated) and provide the path to the `.mitm` file you want to decode:
+
+```bash
+python decode_mitm.py results/your_capture_file.mitm
+```
+
+This will create a new file named `results/your_capture_file.decoded.mitm` in the same directory, containing the decoded JSON messages within the flows. The JSON structure for the replaced content will look like this:
+
+```json
+{
+    "messages": [
+        // list of decoded messages ...
+    ]
+}
+```
 
 #### Inspecting results
 
