@@ -1,1 +1,9 @@
 cursortablogs
+
+# mitm setup
+mitm/aiserver_pb2.py
+mitm/aiserver_pb2_grpc.py
+mitm/__pycache__
+mitm/.venv
+mitm/results/*.log
+mitm/results/*.mitm
