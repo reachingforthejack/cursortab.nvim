@@ -1,4 +1,5 @@
 cursortablogs
+.DS_Store
 
 # mitm setup
 mitm/aiserver_pb2.py
